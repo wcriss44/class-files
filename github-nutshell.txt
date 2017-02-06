@@ -1,0 +1,18 @@
+Setting up your repo for the first time:
+
+Create a new repository on github, and note (copy) the "clone url" for that repo
+
+cd your_folder
+git init .
+git remote add origin https://your_github_repo_url.git
+
+To "save" changes:
+
+git add your_file
+git commit -m "Your commit message"
+git push
+
+NOTES:
+
+* the _first_ time you do a push, you'll need to do `git push --set-upstream origin master`. Then from there on out, that will be the default.
+* if you forget the `-m` on commit, you'll be dropped into vim to write a commit message. Don't panic. `ESC :q!` will quit (without saving / committing).
