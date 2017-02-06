@@ -16,3 +16,8 @@ NOTES:
 
 * the _first_ time you do a push, you'll need to do `git push --set-upstream origin master`. Then from there on out, that will be the default.
 * if you forget the `-m` on commit, you'll be dropped into vim to write a commit message. Don't panic. `ESC :q!` will quit (without saving / committing).
+
+
+how to add SSH keys to your Github account - https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/  If you do that, your key will be used to authenticate, and you won’t have to type in a password each time you push.
+
+(N.B. you _will_ need to follow the directions under the “you should have already set up SSH keys” link)
