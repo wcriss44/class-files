@@ -1,0 +1,22 @@
+export CLICOLOR=1
+export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
+
+_git_prompt() {
+ local ref="$(command git symbolic-ref -q HEAD 2>/dev/null)"
+ if [ -n "$ref" ]; then
+   echo " (${ref#refs/heads/})"
+ fi
+}
+
+_failed_status() {
+ [ "$PIPESTATUS" -ne 0 ] && printf "$"
+}
+
+_success_status() {
+ [ "$PIPESTATUS" -eq 0 ] && printf "$"
+}
+
+PS1='\[\e[0;31m\]\w\[\e[m\]$(_git_prompt) \[\e[1;31m\]$(_failed_status)\[\e[m\]$(_success_status) '
+
+alias ll="ls -la"
+alias get="git
