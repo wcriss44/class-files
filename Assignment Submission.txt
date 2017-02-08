@@ -1,0 +1,36 @@
+Steps for assignment submission:
+
+Fork the assignment
+Verify that the assignment is on your actual GitHub page
+    - it should read: "username/assignment name" at the top
+click clone and copy the URL
+
+Open your terminal
+  change your directory to your Code directory
+  clone the files from GitHub with the correct git command
+        -tip: google search for command line git clone
+  create a new branch with your lastname_assignment name as the name
+  check out that branch
+        -tip: google search git commands for branch and how to check them out
+  verify everything is good
+        -tip: Get a status?
+
+*** Open intelliJ and do some coding!!!!!
+
+When you are finished, you need to send the assignment in for submission
+  go back to the terminal
+  verify you are in the right directory
+  Add your files to git
+        -tip: Google search how to add files in git
+  You also need to commit those files!
+        -tip: Google search commiting in git
+  Now you you can verify the status in git with: git status. If your are ready to send them up, move on.
+  now send your files to your github account
+        -tip: Google search pushing in git
+
+Almost done! Go back to your GitHub repository and do a pull request. Make sure that this is a pull request from your repository (username/assignment) and that it is on your new branch(should be lastname_assignment)!
+
+once you do a pull request, copy the link and paste it into NewLine's assignment submission.
+
+All done! Rejoice!
+
