@@ -1,0 +1,60 @@
+Day 3 lecture task
+
+make new project
+rename class(From main to game)
+rename file
+  in sidebar
+  right click main.java
+  refactor and rename file
+
+Add print statements(welcome).. println
+use Scanner
+  import java.util.scanner
+  make scanner object, named scanner
+  make a String called name, set to equal the nexLine() method of the new scanner object.
+
+Welcome user to the game
+    print welcome + name variable
+Choose a weapon(sword, mace)
+read into string named weapon
+    use scanner.nextLine() method
+
+Confirm weapon choice and do stuff!
+  if weapon is sword
+    print a message
+  else if
+    print another message
+  else
+    tell them it is wrong, throw exception
+
+Have user select location(forest, tunnel)
+  if forest
+    print a message
+  else if
+    print another message
+  else
+    tell them it is wrong, throw exception
+
+Add "throws Exception" to main method signature
+
+Now lets refactor!!!
+  create a player class
+  add 3 String variables
+
+write chooseName method
+write chooseWeapon method
+
+add a scanner and player on game Class
+write chooseLocation method
+
+go to game class
+delete all but "Welcome, Traveller" print statement
+call chooseName, chooseWeapon, chooseLocation from game's main method
+now run and see the results!
+
+
+
+
+
+
+
