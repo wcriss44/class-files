@@ -132,8 +132,16 @@ Add loop method (out of main class)
                     System.out.println("command not found!");
                     break;
             }
+            line = scanner.nextLine();
         }
+        return line;
     }
+
+Add a call to this method in Player class
+  where you see Game.Scanner.nextLine() within the player class,
+  change this to Game.nextLine();
+
+Run your program!
 
 
 
