@@ -34,3 +34,15 @@ once you do a pull request, copy the link and paste it into NewLine's assignment
 
 All done! Rejoice!
 
+
+When you to try push and get an error that says 
+"
+~/Code/[folder] ([name]_[project]) $ git push origin [name]_[project]
+remote: Permission to NOVA-Uncommon-Coders/[project].git denied to [you_git_name].
+fatal: unable to access 'https://github.com/NOVA-Uncommon-Coders/[project].git/': The requested URL returned error: 403
+"
+Then, if you're brave, do the below. WARNING you must be certain that you're on the correct folder, 'rm -r' removes all *git* files and folders within the current folder. (rm = remove, -r = recursively, -f = attempt to remove files without asking for further permission, ./.git = files that start with .git) 
+rm -r -f ./.git
+git init
+git remote add origin [URL]
+git checkout -b [your_project_name]
