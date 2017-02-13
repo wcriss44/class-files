@@ -1,0 +1,83 @@
+Reviewed last weeks learning topics:
+    -talked about Arrays and classes
+    -Talked about methods and constructors
+    -talked about control flow(if, while, for, throw)
+    -talked about hashmaps and arraylist
+
+We are making a new program called ToDo that tracks a ToDo list for us.
+
+Open IntelliJ and create a new project named ToDo from command line template
+Create a new class in your source called ToDoItem
+
+create some variables in the new class:
+    -public String text;
+    -public boolean isDone;
+
+create a constructor for the class that sets both variables:
+    -public ToDoItem(String text, boolean isDone){
+    this.text = text;
+    this.isDone = isDone;
+    }
+
+create a new class in your source called ToDo:
+turn this into your main class by adding:
+    -public static void main(String args[]){
+
+    }
+
+Now that it is your your main, lets add an arraylist to the new main method.
+    -ArrayList<ToDoItem> items = new ArrayList<>();
+
+Add a Scanner object to your main method:
+    -Scanner scanner = new Scanner(System.in);
+
+Add an infinite loop to your main method:
+    - while (true){
+
+    }
+Add some print statements within the while loop:
+    -System.out.println("1. Create a to-do item");
+    -System.out.printon("2. toggle to-do item");
+    -System.out.println("3. List to-do items");
+
+Get input from the user within your while loop:
+    -String option = scanner.nextLine();
+    if (option.equals("1")) {
+        System.out.println("Enter To-Do item.");
+        String text = scanner.nextLine();
+        ToDoItem text = new ToDoITem(text, false);
+        items.add(item);
+    } else if (option.equals("2")) {
+        System.out.println("Enter the number of the item you want to toggle");
+        int itemNum = Integer.valueOf(scanner.nextLine());
+
+        toDoItem item = items.get(itemNum -1)
+        item.isDone = !item.isDone;
+
+    } else if (option.equals("3")) {
+        int i = 1;
+        for (ToDoItem item: items){
+          String checkbox = "[ ]";
+          if (item.isDone){
+          checkbox = "[x]";
+          }
+          System.out.println(checkbox + i + ". " + item.text);
+          i++;
+        }
+    } else {
+      System.out.println("Invalid Option");
+    }
+
+Now lets run your program. Make sure to click the green arrow on the side and run your ToDo class main method, not Main class main method!
+
+Now we will package our file in a JAR
+    -be aware, there are two types of files: .jar which is Java Archive
+     and the second is .war which stands for Web Archive
+To package it as a JAR, go to:
+    -file, project structure, artifacts, click the plus and select JAR, then select from modules with dependencies
+        -On the pop up select ToDo as the main class. Click the ... to see your classes.
+        -now select okay
+        -now select okay again
+    -Go to build at the top and select build artifacts
+        -on the pop up select ToDo.jar -> build
+All done!
