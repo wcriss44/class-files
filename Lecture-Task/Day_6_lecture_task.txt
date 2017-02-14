@@ -1,0 +1,167 @@
+Open groovy console in Intellij
+    -open Intellij
+    -open HellWorld project
+    -At the top, select tools -> Groovy Console
+
+Run a command!
+    -//System.out.println(checkbox + i + "." + item.next);
+    -String name = "Alice";
+    -String.format("Hello, %s! You are %s years old.", name, age); //this is string format. Variables go into %s
+    -System.out.printf("Hello, %s!, You are %s years old.", name, age);
+
+open ToDo project and replace your checkbox lines with a printf version
+    -new string should be: System.out.printf("%s, %s. %s\n", checkbox, i, item.text);
+
+Run your improved ToDo tracker and add a few ToDos, then list them to verify it works
+
+Go back to groovy and use %.2f to format a double so it only shows 2 decimal points.
+    -double balance = 87.34083434;
+    -System.out.printf("Your balance is: $%.2f", balance);
+
+Lecture now moved to object oriented programming
+How can you use classes in a class for Java?
+    -You can import
+    -You can Create object
+    -You can also extend
+
+Lets do this in a project
+    -Create a new command line project
+    -name it Zoo
+
+Add an Animal class
+    -Give a variable to your new class:
+        -String name;
+
+Now add a Mammal class
+    -Make a constructor:
+        -public Mammal(){
+           this.name = "Mammal";
+        }
+Now add a Reptile class
+    -Make a constructor:
+        -public Reptile(){
+           this.name = "Reptile";
+        }
+Lastly, add a Bird class
+    -Make a constructor:
+        -public Bird(){
+           this.name = "Bird";
+        }
+
+Now lets add some subclasses for our subclasses!
+
+Add a Dog class that extends Mammal
+    -Make a constructor:
+        -public Dog(){
+           this.name = "Dog";
+        }
+Add a Snake class that extends Reptile
+    -Make a constructor:
+        -public Snake(){
+           this.name = "Snake";
+        }
+Add a Hawk class that extends Bird
+    -Make a construct:
+        -public Hawk(){
+           this.name = "Hawk";
+        }
+
+Go back to Animal class and add behavior(A method)
+    -public void makeSound(){
+       System.out.println("Animal sound!");
+    }
+
+Now go back to your sub classes and change makeSound
+
+For dog:
+    -@override //this is an Annotation
+      public void makeSound(){
+         System.out.println("Bark");
+      }
+For snake:
+      -@override
+      public void makeSound(){
+         System.out.println("Sssssss");
+      }
+For Hawk:
+    -@Override
+      public void makeSound(){
+         System.out.println("Cawwww");
+      }
+
+Now we will look at overriding hidden methods
+All classes extend Object, and as such they have a method called toString()
+
+Go to Animal  class and override toStirng:
+    -@Override
+    public String toString(){
+       return this.name;
+    }
+As an optional exercise, create some objects from our classes in your main method
+
+Open our TextAdventure game in the IDE
+
+Go to Player class and add two new variables called health and damage
+    -int health;
+    -int damage;
+
+Add a constructor so it assigns default values
+    -public Player(){
+        this.health = 20;
+        this.damage = 20;
+    }
+
+Now add an Enemy class to the game.
+
+Give the Enemy class some variables:
+    -String name;
+    -int health;
+    -int damage;
+
+Create a new class called Character and make Enemy and Player extend it
+    -public class Player extends Character
+    -public class Enemy extends Character
+
+Add three variables to your Character class:
+    -String name;
+    -int health;
+    -int damage;
+
+Now go to Enemy class and Player class and remove these variables:
+    -name
+    -health
+    -damage
+
+Go back to Character class and make a battle method:
+    -public void battle(Character enemy) {
+        System.out.printf("%s appears!\n", enemy.name);
+
+        while (health > 0 && enemy.health > 0) {
+            health -= enemy.damage;
+            enemy.health -= damage;
+            System.out.printf("%s's health: %d\n", name, health);
+            System.out.printf("%s's health: %d\n", enemy.name, enemy.health);
+        }
+
+        String message = "%s has died.\n";
+
+        if (health <= 0) {
+            System.out.printf(message, name);
+        }
+
+        if (enemy.health <= 0) {
+            System.out.printf(message, enemy.name);
+        }
+    }
+}
+
+Add a constructor for Enemy and Player that takes a string, int, int to set name, health, damage
+
+Run the program
+
+It should be noted, we ran into some issues with variables being left in Enemy and Player that our constructor assigned values to. Debugging helped us to find the issues here.
+
+
+
+
+
