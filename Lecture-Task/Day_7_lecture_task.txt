@@ -1,0 +1,104 @@
+Open HelloWorld project in IntelliJ
+
+add a new class called ReadWriteFile
+
+Add a main method to this new class
+  public static void main(String args[]) throws IOException{
+     //some code here
+  }
+      -the IOException is a new term. This means:
+          If there are issues with input or output, it will throw an exception
+
+now get a new file:
+    File f = new File("names.txt");
+        -Make sure to import: import Java.io.File
+
+now get a FileWrite:
+    FileWriter fw = new FileWriter(f);
+
+Now tell our filewriter object to write to our file:
+    -fw.write("Alice\n");
+    -fw.append("Bob\n");
+    -fw.append("Charlie\n");
+
+Make sure you close your file when you are done writing!
+    -fw.close();
+
+now use a scanner to scan from the file
+    -Scanner scanner = new Scanner(f);
+        note: Scanner can be used for more then just user input! You can also use it to read from files
+
+Lets use this scanner to print out what we wrote:
+    -while(scanner.hasNext()){
+        System.out.println(scanner.nextLine());
+    }
+
+now we are going to read with delimiters:
+    scanner = new Scanner(f);
+    scanner.useDelimter("\\Z");
+    String contents = scanner.next();
+    System.out.println(contents);
+
+Now we will use JSON with our files:
+    -Add the JSON library in your project:
+        -Go to file menu -> project structure -> libraries -> click on the plus sign -> from maven -> org.jodd:jodd-json:3.8.0 (this is the address) and follow the prompts
+
+Now use your newly imported library to convert an object into JSON format and write it into a file.
+    -turning a Java object into a JSON file is called serialization
+
+Add a new class named ReadWriteJson to your project file
+
+add a main method to your new class:
+    public static void main(String[] args) throws IOException {
+
+    }
+
+now add a new person object to your newly created file:
+    -Person p = new Person();
+
+Set some variables:
+    -p.setName("Alice Smith");
+    -p.setAge(30);
+
+Now create a new file object:
+    -File f = new File("person.json");
+
+Next we need to use JsonSerializer serializer = new JsonSerializer();
+
+Now declare a string named json that is equal to the return from the serializer object's serialize() method:
+    -String json = serializer.serialize(p);
+
+now create a string that holds the return of your serializer object's serialize method:
+    -String json = serializer.serialize(p);
+      //this method takes an object as a parameter
+
+Next we have to create a FileWriter object:
+    -FileWriter fw = new FileWriter(f);
+
+Lastly, we need to write to our json return to a file!
+    -fw.write(json);
+    -fw.close();
+
+Now lets read this Json file with a Scanner object:
+    -Scanner s = new Scanner(f);
+
+Next we need to tell our scanner object to use a delimiter with the useDelimiter method. "\\Z" is used as our delimiter to tell Java we want to go until the end of file.
+    -s.useDelimiter("\\Z");
+    String contents = s.next();
+
+The imported library has a class that lets us parse the file to create an object out of it:
+
+    -create a parser object:
+        -JsonParser parser = new JsonParser();
+    -Create a new person object named p2.
+        -Person p2 = parser.parse(contents, Person.class);
+
+Now print out your new object!
+    -System.out.println(p2);
+    -System.out.println(p2.getName());
+    -System.out.printf("Age: %s", p2.getAge());
+
+
+
+Lecture is now covering adding a Save and Load feature to the TextAdventure game:
+    -
