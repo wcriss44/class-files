@@ -41,11 +41,93 @@ Next, lets add a new test -> go to your Character class, put your cursor on the 
 In your new test class, change battle to:
     -testBattle()
 
-now create a new player:
+Now create a new player:
     -Player player = new Player(testPlayer);
 
-now create an enemy:
+Next create an enemy:
     -Enemy enemy = new Enemy("Test Enemy", 5, 5);
 
 Lastly, make them battle!
     player.battle(enemy);
+
+Now we need to add some assertions:
+    -assertTrue(player.health > 0);
+    -assertTrue(enemy.health <=0);
+
+Now run your test case! click the green arrow to run.
+    -this makes sure that you assertions are true.
+
+
+
+Our last topic for today is Forum
+
+
+Lets start with a new project:
+    file -> new -> next -> from template -> console -> name it: Forum
+
+Make a new class called: Post
+
+add some variables:
+    -int replyID;
+    -String author;
+    -String text;
+
+Next, add a constructor:
+    -public Post (int replyId, String author, String text){
+        this.replyId = replyId;
+        this.author = author;
+        this.text = text;
+    }
+
+Now we need to add a posts.txt to our root folder:
+    -Right click your forum project and select new file:
+        -name it: posts.txt
+        copy and paste this into it:
+            -1|alice|Hey guys!
+            -1|bob|This is a new discussion
+            0|charlie|Hi alice
+            2|alice|Hi charlie
+            1|charlie|Hey bob
+
+Create a new class called Forum
+    -add a main method:
+        public static void main(String args[]){
+
+        }
+
+Now add an array list to hold our post!
+    -ArrayList<Post> posts = new ArrayList<>();
+        -tip: Make sure to import your arraylist library!
+
+Next we need to read files. Create a new file object
+    -File f = new File("post.txt");
+
+Add a scanner to scan the file:
+    -Scanner scannerFile = new Scanner(f);
+
+Now loop over the file to get the post!  :
+    while(scannerFile.hasNext()){
+        String line = scnnerFile.nextLine();
+        String[] columns = line.split("\\|");
+
+        Post post = new Post(Integer.valueOf(columns[0]), columns[1], columns[2]));
+        posts.add(post);
+    }
+
+now loop over your array list to display it:
+    -Scanner scannerConsole = new Scanner(System.in);
+    int replyID = -1;
+    while(true){
+        int id = 0;
+        for (Post post: posts){
+          if (post.replyId == replyId){
+
+            System.out.printf("(%d) %s by %s\n", id, post.text, post.author);
+          }
+          id++;
+        }
+        System.out.println("Type the id you want to see replies to: ");
+        replyId = Integer.valueOf(scannerConsole.nextLine());
+     }
+
+Now run your program!
