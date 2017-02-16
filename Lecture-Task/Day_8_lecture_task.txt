@@ -1,0 +1,51 @@
+Debugging:
+
+Open textAdventure game in Intellij
+
+remove "new Player("name"); from your player declaration.
+
+Now run the program so you get a NullPointerException.
+    -A null pointer exception means that your variable is pointing to nothing.
+
+As a note, there are two types of errors in programming:
+    -Compile time errors happen when something is detected during compile time. This is generally syntax errors or incorrect assignments.
+    -Run time errors are generally logical errors, such as improper display results.
+
+Now place a break point in intellij so our debugger will stop while it is running and allow us to step throw line by line.
+    -click line 16 to put a red circle.
+    -click debug Game at the top.
+
+Your game will start to run by when it gets to the break point it will stop. The variables show that player = null.
+
+One feature of debugger mode is being able to change values of variables.
+
+You can also hotswap. Set a breakpoint at a spot you want to hotswap, make you rchanges when it stops, then go to run -> reload Changed Classes
+
+Testing:
+
+There is a library called JUnit that allows us to write test against methods.
+
+At the top, click file -> project structure -> modules -> sources -> src -> right click and add new foloder
+    -Name this "test"
+
+On this new folder, right click and mark as test and then click "ok" at the bottom.
+
+now, add a Junit library to the project
+    -go back to project structure -> libraries -> add and choose "from maven" and enter:   junit:junit:4.12
+
+
+Next, lets add a new test -> go to your Character class, put your cursor on the battle method, and then select:
+    - Navigate -> test -> create new test
+          select the battle method and press "ok"
+
+In your new test class, change battle to:
+    -testBattle()
+
+now create a new player:
+    -Player player = new Player(testPlayer);
+
+now create an enemy:
+    -Enemy enemy = new Enemy("Test Enemy", 5, 5);
+
+Lastly, make them battle!
+    player.battle(enemy);
