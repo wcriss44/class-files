@@ -47,4 +47,91 @@ Now click on button and change text for each to:
     Remove
     Toggle
 
+    Change the minimum width, under layout, of each button to
+    use_pref_size
+
+Go to controller on the bottom left and set the controller class to:
+    sample.Controller
+
+In the code section of your elements, set the fxid to:
+    list view: list
+    text field: text
+
+go back to intellij and type:
+    @FXML
+    ListView list;
+
+    @FXML
+    TextField text;
+
+Make sure that you import javafx.scene.control.*;
+
+Now we need to add the logic to our controller class
+
+First, go into scenebuilder and tell the elements what methods to call
+
+under the code section, select your buttons and add this to the on action section:
+    addItem, removeItem, toggleItem
+
+Next, go to intellij and add these three methods:
+    public void addItem(){
+
+    }
+    public void removeItem(){
+
+    }
+    public void toggleItem(){
+
+    }
+
+For now, you can add a println for each method and test it by running your program.
+
+now lets work on our model for the MVC design pattern:
+
+create a class under sample in intellij named ToDoItem
+
+Add two variables:
+    String text;
+    boolean isDone;
+
+Add a constructor that takes a String:
+    public ToDoItem(String text){
+        this.text = text;
+        this.isDone = false;
+    }
+
+add an override of the toString() method:
+    @Override
+    public String toString(){
+        return text + (isDone ? " (done) " : "");
+    }
+
+Create an ObservableList from the javafx.collections library
+    OberservableList<ToDoItem> items = FXCollection.observableArrayList();
+
+now we need to implement an interface.
+    add implements Initializable to your class Controller line
+
+To finish the implementation process, we need to override the initialize method:
+    @Override
+    public void initialize(URL location, ResourceBundle resources){
+        list.setItems(items);
+    }
+
+Now add functionality to the addItem() method:
+    items.add(new ToDoItem(text.getText()));
+    text.setText(""); --This will clear the textfield
+
+Now add functionality to the removeItem() method:
+    ToDoItem item = (ToDoItem) list.getSelectionModel().getSelectedItem();
+    items.remove(item);
+
+Lastly, add functionality to the toggleItem() method:
+
+
+
+
+
+
+
 
