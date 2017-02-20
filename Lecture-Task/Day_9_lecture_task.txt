@@ -1,0 +1,50 @@
+JavaFX is a graphical user interface(GUI)
+
+three functions of classes according to MVC design pattern:
+
+Controller classes   Controls logic of getting input and generating right response/output to view layer
+View classes         Present application data, user input
+Model classes        Representing facts in the application
+
+model classes get data from: databases, APIs, etc
+
+MVC is a design approach that helps to define the classes in your program. Controller classes act as a bridge between Model classes and View classes. View classes are used to show and display data while model classes are the actual data. In this sense, controller classes contain the actual logic.
+
+Today we will focus on JavaFX, which is the view side of our program.
+
+open Intellij and create a new Java FX Application. Name it ToDoDesktop.
+
+now expand your source packages, go to sample and click on main.
+
+Notice that in your main class, a new object was created using Parent root = FXMLLoader.load(getClass().getResource(sample.fxml"));
+
+Lets launch scene builder and create our own fxml file!
+
+Launch scene builder
+
+open your sample.xfml file in scenebuilder
+
+delete the grid on the left
+
+go back into Intellij, change the title to: ToDoDesktop and change the width and height to be 800 x 600.
+
+Now on scene builder, drag a V box to the screen
+
+now drag a horizontol box to the screen
+
+Lastly, add a listview from controllers
+
+Now change the layout of the list so it can grow:
+    go to list view -> layout on the right -> Vgrow:
+        change this to always
+
+Now add a text field and three buttons to your Hview
+
+Set hbox Hgrow to always
+
+Now click on button and change text for each to:
+    Add
+    Remove
+    Toggle
+
+
