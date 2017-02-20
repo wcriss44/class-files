@@ -127,6 +127,125 @@ Now add functionality to the removeItem() method:
     items.remove(item);
 
 Lastly, add functionality to the toggleItem() method:
+    ToDoItem item = (ToDoItem) list.getSelectionModel().getSelectedItem();
+
+    if (item != null) {
+    item.isDone = !item.isDone;
+    list.refresh();
+    }
+
+Run your program! It should be working!
+
+our next program we will create is.... a web browser!
+
+Start by making a new JavaFX application named BrowserDesktop
+
+set your title to: Desktop Browser and width/height to 800x600
+
+run to verify it launches
+
+Open sample.fxml in scene builder for your BrowserDesktop project
+
+now delete the GridPane that is currently there
+
+Add a Vbox element with the following inside:
+    -Hbox
+    -WebView
+
+for your WebView, select the VGrow element under layout and set it to Always
+
+Inside of your Hbox, add these elements:
+    -Three buttons
+    -TextField
+
+Name your buttons:
+    -Go
+    -Back
+    -Forward
+
+Set minimum width to user_pref_size for all three buttons
+
+set Hgrow to always for the TextField
+
+now save and run on your intellij to make sure it loads
+
+Add Sample.Controller to controller class for your project in scenebuilder on the bottom left
+
+
+now add our textfield id to your controller class in Intellij
+
+import javafx.scene.control.TextField;
+import javafx.scene.web.WebView;
+
+  @FXML
+  TextField addressBar;
+
+  @FXML
+  WebView webView;
+
+Go to scene builder and add a method call to each button for on Action:
+    goToUrl, goForward, goBack
+
+now go to Intellij and add the three methods to your controller class:
+    public void goBack(){
+
+    }
+    public void goForward(){
+
+    }
+    public void goToUrl(){
+
+    }
+
+You can add a System.out.println() for each one and test their functionality.
+
+now add functionality to the goToUrl() method:
+    String URL = addressBar.getText();
+        if(!url.startsWith("http")){
+            url = "http://" + url;
+       }
+    webView.getEngine().load(url);
+    }
+
+now add functionality to goBack() method:
+    try {
+        webView.getEngine().getHistory().go(-1);
+    }
+    catch (Exception e) {
+
+    }
+
+Do the same for goForward() as you did for goBack() except change -1 to 1
+
+now we need to detect an event on our controller class
+    public void onKeyPressed(KeyEvent event){
+        if (event.getCode() == KeyCode.ENTER){
+            goToUrl();
+        }
+    }
+
+Now use it in scenebuilder:
+    go to your TextField -> code -> keyboard -> OnKeyPressed
+        enter your onKeyPressed method here
+
+Next, lets implement Initializable and override the initialize method:
+    add implements Initializable, ChangeListener to your class declaration line
+
+    Add two overrides:
+    @Override
+    public void initialize(URL location, ResourceBundle resources){
+        Worker work = webView.getEngine().getLoadWorker();
+        worker.stateProperty().addListener(this);
+    }
+
+    @Override
+    public void changed(ObservableValue observerable, Object oldValue, Object){
+        addresBar.setText(webView.getEngine().getLocation());
+    }
+
+    Also make sure to setID of webView to webView!
+
+
 
 
 
