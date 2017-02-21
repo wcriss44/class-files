@@ -30,7 +30,7 @@ Make sure to do the imports for each (android.widget.....)
 
 ListView list;
 EditText text;
-Button add;
+Button addButton;
 Now add an ArrayAdapter to hold String objects:
     ArrayAdapter<String> items;
 
@@ -50,9 +50,107 @@ list.setAdapter(items);
 Above we declared items as an ArrayAdapter object that holds string objects. Inside of the onCreate method we assign a new ArrayAdapter to this object, and use the value of this and android.R.layout.simple_list_item1 for the constructor.
 Next we set the adapter for list using the setAdapter method and pass in the value of items.
 
+now make a listener for your button within the onCreate:
+    addButton.setOnClickListener(this);
+    list.setOnItemClickListener(this);
+
+next, make an override to the onClick outside of your onCreate method:
+
+    public void onClick(View v){
+        String item = text.getText().toString();
+        items.add(item);
+        text.setText("");
+    }
+now we need to implement this interface as well as another:
+    go to your class declaration and add:
+        implements View.OnClickListener, AdapterView.OnItemLongClickListener
 
 
+next, we need to do another override for our other interface:
 
+@Override
+public boolean onItemLongClick(AdapterView<?> parents, View view, int position, long id){
+  String item = items.getItem(position);
+  items.remove(item);
+  return true;
+}
+
+next we are going to build an android browser!
+
+first, create a new project for your android browser, just like you did before. Name this one AndroidBrowser
+
+go to your activity_main.xml file and delete the text field, as before.
+
+Next, add a vertical layout that contains a horizontal layout at the top and a webView at the bottom.
+
+Add three buttons and a textfield to the horizontal layout
+
+Name one button >, one button <, and your last button Go
+
+next, add IDs to your buttons, text field, and webview:
+
+  goButton, backButton, forwardButton, addressBar, webView
+
+now it is time to do some coding!
+
+inside of your main activity class, add some variables:
+
+  EditText addressBar;
+  Button backButton;
+  Button forwardButton;
+  button goButton;
+  WebView webView;
+
+  inside of your onCreate method, add the following:
+
+  addressBar = (EditText) findViewById(R.id.editText);
+  backButton = (Button) findViewById(R.id.backButton);
+  forwardButton = (Button) findViewById(R.id.forwardButton);
+  goButton = (Button) findViewById(R.id.goButton);
+  webView = (WebView) findViewById(R.id.webView);
+
+  now implement your interface in your class declaration:
+      implements View.OnClickListener
+
+  go back to your onClear method and add the following:
+
+  backButton.setOnClickListener(this);
+  forwardButton.setOnClickListener(this);
+  goButton.setOnClickListener(this);
+
+
+  now override your onClick method that you implemented:
+
+  @Override
+  public void onClick(View v){
+      if (v == backButton){
+          webView.goBack();
+      } else if (v == forwardButton){
+          webView.goForward();
+      } else if (v == goButton){
+          String address =  addressBar.getText().toString();
+          if (!address.startsWith("http")){
+              address = "http://" + address;
+          }
+          webView.loadUrl(address);
+      }
+  }
+
+
+Next, add perimission to use the internet by adding the following to your AndroidManifest.xml file:
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+Lastly, go back to onCreate method and add code that updates the address bar:
+
+webView.setWebViewClient(new WebViewClient() {
+  @Override
+  public void onPageStarted(WebView view, String url, Bitmap favicon){
+    addressBar.setText(url);
+  }
+});
+
+Now run your program! It's done!
 
 
 
