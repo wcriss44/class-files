@@ -1,0 +1,58 @@
+Open Android studio and create a new project called ToDoAndroid
+
+Change the name to ToDoAndroid and make an app for phones. Select blank activity and click finish. Now you can program some apps!
+
+Now select the phone icon and select the one with x86
+
+AVD = Android Virtual Device
+SDK = Software Development Kit
+
+run your phone
+
+now go to activity_main.xml under Res -> layout
+
+delete textview
+
+Select LinearLayout(Veritical) and drag it onto rootview
+
+now add a listview to your linearLayout(veritical)
+
+Next, add a horizontal layout to your linearlayout view
+
+
+inside of the horizontal layout, add a button and a text field
+
+now change the text of Button to: Add
+
+Next, go to projects -> MainActivity class and add some code!
+
+Make sure to do the imports for each (android.widget.....)
+
+ListView list;
+EditText text;
+Button add;
+Now add an ArrayAdapter to hold String objects:
+    ArrayAdapter<String> items;
+
+now add this to onCreate method:
+
+list = (ListView) findViewById(R.id.listView);
+text = (EditText) findViewById(R.id.editText);
+addButton = (Button) findViewById(R.id.button);
+
+the syntax for this is: declared variable name outside of onCreate is assigned the typecasted (type) of findViewById method with R.id.IDDECLAREDINXML as a parameter.
+
+next, still inside onCreate, assign items to a new ArrayAdapter:
+
+items = new ArrayAdapter<String>(this, android.R.layout.simple_list_item1);
+list.setAdapter(items);
+
+Above we declared items as an ArrayAdapter object that holds string objects. Inside of the onCreate method we assign a new ArrayAdapter to this object, and use the value of this and android.R.layout.simple_list_item1 for the constructor.
+Next we set the adapter for list using the setAdapter method and pass in the value of items.
+
+
+
+
+
+
+
