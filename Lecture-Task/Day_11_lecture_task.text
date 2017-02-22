@@ -1,0 +1,107 @@
+Today we will be using LibGDX to create a game
+
+first, run libGDX and set it to only create a desktop app.
+
+make sure the following fields have this:
+
+name: HelloGame
+package: com.theironyard
+destination: users/YOURUSERNAME/code/HelloGame
+
+after it is done generating open intellij and import your newly created libGDX game. Make sure to select from external model and choose Gradle. Click next to open the next screen
+
+click finish and then click okay
+
+notice there is no run button. In order to run we have to set up a run configuration
+
+go to run -> edit configurations
+    hit the plus in the left corner and then select application
+
+type Desktop under class to add your class from the pop up. The path should be -> com.ironyard.desktop.DesktopConfiguration
+
+choose main and select okay
+
+now under project expand HelloGame -> desktop -> src[main] -> com.theironyard -> DesktopLauncher
+
+now you see your main program!
+
+if you have issues running your main, edit configurations and add /core/assets to the file path for working directory.
+
+the majority of your code will go to core -> assets -> src[main] -> com.theironyard -> myGdxGame class
+
+open up this class file and take a look at the code inside
+
+go to the render method and change the method call to Gdx.gl.glClearColor and tell it to change a color. Watch it happen!
+
+now add the following code:
+    float x, y; -> to the variable section
+    x++; -> to the render() method
+    y++; -> to the render() method
+    change batch.draw() method call to:
+        batch.draw(img, x, y);
+
+now add move() to render;
+
+next, add the move method to your code:
+        void move() {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            y++;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            y--;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            x++;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            x--;
+        }
+    }
+
+now lets look at velocity!
+
+add xv, yv to your float variable declarations up top. Also add a new variable called:
+    static final float MAX_VELOCITY = 100;
+
+Now add a decelerate method:
+
+  float decelerate(float velocity) {
+    float deceleration = 0.95f; // the closer to 1, the slower the deceleration
+    velocity *= deceleration;
+    if (Math.abs(velocity) < 1) {
+      velocity = 0;
+    }
+    return velocity;
+  }
+
+lastly, replace your old move method with a new one:
+
+          void move() {
+      if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+          yv = MAX_VELOCITY;
+      }
+      if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+          yv = MAX_VELOCITY * -1;
+      }
+      if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+          xv = MAX_VELOCITY;
+      }
+      if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+          xv = MAX_VELOCITY * -1;
+      }
+
+      y += yv * Gdx.graphics.getDeltaTime();
+      x += xv * Gdx.graphics.getDeltaTime();
+
+      yv = decelerate(yv);
+      xv = decelerate(xv);
+  }
+
+now we are going to open a new GDX project. Re open libGDX and create a new project called SuperKoalio following the same instructions from above
+
+set up your configurations to run the desktop_main module with a main class of com.theironyard.desktop.DesktopLauncher
+
+once your main is set up, do a test run to make sure you see the bad logic image
+
+download the assets zip file from newline and unzip it, then add the assets to your project/core/assets directory
+
