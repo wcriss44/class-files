@@ -105,3 +105,244 @@ once your main is set up, do a test run to make sure you see the bad logic image
 
 download the assets zip file from newline and unzip it, then add the assets to your project/core/assets directory
 
+now add the following code:
+public class MyGdxGame extends ApplicationAdapter {
+    SpriteBatch batch;
+    TextureRegion stand, jump;
+
+    static final int WIDTH = 18;
+    static final int HEIGHT = 26;
+
+    @Override
+    public void create () {
+        batch = new SpriteBatch();
+        Texture sheet = new Texture("koalio.png");
+        TextureRegion[][] tiles = TextureRegion.split(sheet, WIDTH, HEIGHT);
+        stand = tiles[0][0];
+        jump = tiles[0][1];
+    }
+
+    @Override
+    public void render () {
+        Gdx.gl.glClearColor(0.5f, 0.5f, 1, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        batch.draw(stand, 0, 0);
+        batch.end();
+    }
+}
+
+make sure when you do that you replace your existing render and create methods, as well as import required imports
+
+
+next, make him bigger!
+
+add two new variables to the top:
+
+  static final int DRAW_WIDTH = WIDTH*3;
+  static final int DRAW_HEIGHT = HEIGHT*3;
+
+replace your old render method with this new one:
+
+    public void render () {
+        Gdx.gl.glClearColor(0.5f, 0.5f, 1, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        batch.draw(stand, 0, 0, DRAW_WIDTH, DRAW_HEIGHT);
+        batch.end();
+    }
+
+now lets make it so our kolia can move:
+
+add the following code, replacing old methods when needed and adding when they are not present:
+
+        ...
+    float x, y, xv, yv;
+
+    ...
+    static final float MAX_VELOCITY = 500;
+
+    ...
+
+    @Override
+    public void render () {
+        move();
+
+        Gdx.gl.glClearColor(0.5f, 0.5f, 1, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        batch.draw(stand, x, y, DRAW_WIDTH, DRAW_HEIGHT);
+        batch.end();
+    }
+
+    float decelerate(float velocity) {
+        float deceleration = 0.95f; // the closer to 1, the slower the deceleration
+        velocity *= deceleration;
+        if (Math.abs(velocity) < 1) {
+            velocity = 0;
+        }
+        return velocity;
+    }
+
+    void move() {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            yv = MAX_VELOCITY;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            yv = MAX_VELOCITY * -1;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            xv = MAX_VELOCITY;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            xv = MAX_VELOCITY * -1;
+        }
+
+        y += yv * Gdx.graphics.getDeltaTime();
+        x += xv * Gdx.graphics.getDeltaTime();
+
+        yv = decelerate(yv);
+        xv = decelerate(xv);
+    }
+
+next, we will add gravity and jump velocity
+
+as before, add if missing or replace if the method is already there:
+
+    ...
+    boolean canJump;
+
+    ...
+    static final float MAX_JUMP_VELOCITY = 2000;
+    static final int GRAVITY = -50;
+
+    ...
+
+    void move() {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) && canJump) {
+            yv = MAX_JUMP_VELOCITY;
+            canJump = false;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            yv = MAX_VELOCITY * -1;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            xv = MAX_VELOCITY;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            xv = MAX_VELOCITY * -1;
+        }
+
+        yv += GRAVITY;
+
+        y += yv * Gdx.graphics.getDeltaTime();
+        x += xv * Gdx.graphics.getDeltaTime();
+
+        if (y < 0) {
+            y = 0;
+            canJump = true;
+        }
+
+        yv = decelerate(yv);
+        xv = decelerate(xv);
+    }
+
+Wouldnt it be nice if our koalio character had a different animation when he jumped? We already stored this in the textureregion, so lets add it!
+
+replace your render() with this new one:
+        public void render () {
+        move();
+
+        TextureRegion img;
+        if (y > 0) {
+            img = jump;
+        }
+        else {
+            img = stand;
+        }
+
+        Gdx.gl.glClearColor(0.5f, 0.5f, 1, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        batch.draw(img, x, y, DRAW_WIDTH, DRAW_HEIGHT);
+        batch.end();
+    }
+
+Now lets change the way our koalio character is facing when we move left or right. As before, add code that is missing and replace code that already exist:
+
+  ...
+    boolean canJump, faceRight = true;
+
+    ...
+
+    @Override
+    public void render () {
+        ...
+
+        Gdx.gl.glClearColor(0.5f, 0.5f, 1, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        if (faceRight) {
+            batch.draw(img, x, y, DRAW_WIDTH, DRAW_HEIGHT);
+        }
+        else {
+            batch.draw(img, x + DRAW_WIDTH, y, DRAW_WIDTH * -1, DRAW_HEIGHT);
+        }
+        batch.end();
+    }
+
+    ...
+
+    void move() {
+        ...
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            xv = MAX_VELOCITY;
+            faceRight = true;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            xv = MAX_VELOCITY * -1;
+            faceRight = false;
+        }
+
+        ...
+    }
+}
+
+
+lastly, lets add an animation to the walking. As always, replace what methods already exist and add if it is something new.
+
+ ...
+    Animation walk;
+    float time;
+
+    ...
+
+    @Override
+    public void create () {
+        ...
+        walk = new Animation(0.2f, tiles[0][2], tiles[0][3], tiles[0][4]);
+    }
+
+    @Override
+    public void render () {
+        time += Gdx.graphics.getDeltaTime();
+
+        move();
+
+        TextureRegion img;
+        if (y > 0) {
+            img = jump;
+        }
+        else if (xv != 0) {
+            img = walk.getKeyFrame(time, true);
+        }
+        else {
+            img = stand;
+        }
+
+        ...
+    }
+
+    ...
+}
+
