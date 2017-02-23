@@ -1,0 +1,19 @@
+Today's topic will cover dependency and package management.
+
+First, install maven and gradle:
+
+go to terminal and type:
+mvn -version
+    if nothing shows up, type:
+        brew install maven
+
+gradle -version
+    if nothing shows up, type:
+        brew instal gradle
+
+PaaS is platform as a service, it allows programmers to focus on products and not worry about the expense of hosting.
+
+Microsoft Azure and Amazon AWS are two famous PaaS providers. Heroku, which we will use during this lab, is another commonly used Heroku.
+
+It is recommended to spend some time creating an account through AWS and learning some of the basic features
+
