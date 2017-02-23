@@ -1,3 +1,12 @@
+Steps for deployment to Heroku:
+heroku login
+cd into git repository
+heroku create
+git push heroku BRANCHNAME
+heroku ps:scale web=1
+heroku open
+
+
 Today's topic will cover dependency and package management.
 
 First, install maven and gradle:
@@ -35,4 +44,51 @@ Maven is a tool that can help solve many of these issues. Maven lets you manage 
 pom.xml, as mentioned above, is a file used by Maven. pom.xml is where you specify what libraries and classes are used in your project. pom.xml also allows you to specifiy all of the build, compile, and other specifications. When you run mvn [project], your pom.xml file will manage all of the importing and other specifications you declared within your pom.xml file.
 
 When we used the jodd library to serialize our objects, we used maven to specificy the library. This specification was entered into our pom.xml file.
+
+lets deploy a java program using maven to heroku:
+
+go to: https://devcenter.heroku.com/articles/getting-started-with-java#introduction
+
+and click on I'm ready to start
+
+the CLI is already installed so click next.
+
+now copy the information from the screen and enter the git command / cd command
+
+now deploy the app!
+
+terminal -> heroku create
+
+this will create a heroku app for your project.
+
+Next, type git push heroku master
+
+now you can verify the deployment:
+
+heroku ps:scale web=1
+
+lastly, you can visit by typing heroku open!
+
+to see your logs type heroku logs --tail
+
+you can exit that screen with control+c
+
+Procfiles tell heroku how to run the app. You can see your procfile by typing vim Procfile
+
+heroku uses your pom.xml to see all of your dependencies
+
+you can type mvn clean install to create your pom file and set things up.
+
+next, type:
+    heroku local web
+
+this will create a local website for you. You can visit it by typing http://localhost:5000
+
+when you are ready to stop, do control+c to quit
+
+We covered adding a dependency to your pom.xml file. To do this, open the pom.xml file and add the dependency between two new <dependency> </dependency> tags.
+
+you can then do a mvn clean install.
+
+this project made use of Spark, which we will use next week to deliver java web applications.
 
