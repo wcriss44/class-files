@@ -17,3 +17,22 @@ Microsoft Azure and Amazon AWS are two famous PaaS providers. Heroku, which we w
 
 It is recommended to spend some time creating an account through AWS and learning some of the basic features
 
+Saas is another common service provided by cloud services. Saas allows you to run software as a service, where you don't have to develop it yourself.
+
+CLI is a commonly used acronym that stands for Command Line Interface. This is often used in reference to installing Command Line Tools.
+
+Once you sign up for Heroku, go to your terminal and run brew install heroku. This will install the Heroku CLI
+
+pom.xml is used by Maven
+
+
+Common problems with large production projects:
+
+mission, naming convetions, sharing, synchronizing, documentation, duplicate work(not resuing), planning
+
+Maven is a tool that can help solve many of these issues. Maven lets you manage dependencies within your software. Maven lets you compile, build, and deploy in a more automated fashion.
+
+pom.xml, as mentioned above, is a file used by Maven. pom.xml is where you specify what libraries and classes are used in your project. pom.xml also allows you to specifiy all of the build, compile, and other specifications. When you run mvn [project], your pom.xml file will manage all of the importing and other specifications you declared within your pom.xml file.
+
+When we used the jodd library to serialize our objects, we used maven to specificy the library. This specification was entered into our pom.xml file.
+
