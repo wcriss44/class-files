@@ -36,3 +36,12 @@ HTTP uses error codes to inform the browser of problems. Some basic examples are
 
     200 response means: service is sucessful
 
+Endpoints are a way to access information through a API. These can be thought of as part of the URL that allow you to access a particular resource.
+
+Spark has a mini server that listens to the client request that come into the server. When a request is made, the logic is delegated to a specific method or application that we develop in Java. Our program will run the method and then send a response back through Spark.
+
+As backend programers, our programs:
+    Listen for request(from client)
+    Parse Request     (on server)
+    Generate response (on server)
+    Send the response (to client)
