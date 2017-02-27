@@ -1,0 +1,23 @@
+This week will focus on web programming using Java and Spark.
+
+First, lets review what the web actually is:
+
+We use the OSI model of networking to leverage several web protocols such as TCP/IP, HTTP, UDP, and so on. Request are made from your computer to a website. DNS resolution is used to resolve the DNS name and turn it into an IP Address. Your request is then routed, using routers all around the world, until it reaches the destination. Once there, communication is established and data is transmitted back and forth.
+
+Older style web services often generated HTML from a program, such as a Java one, and this data was then sent to the browser. Recently, REST has taken off and become more popular. REST stands for Representational State Transfer. In this model, end users are considered consumers. Consumers, as the name implies, consume data. This data is represented by the restful API.
+
+All of this is able to be simplified to a basic producer and consumer scenario. The server is the producer and the client is the consumer.
+
+some common methods that we will use for HTTP:
+    post(URL, Data)                 C
+    get(URL)                        R
+    put()     //Not often used      U
+    Delete()  //Not often used      D
+
+These methods are commonly known as CRUD:
+    Create
+    Read
+    Update
+    Delete
+
+When developing a restful API, you develop an API that follows the rest model. The goal is to have CRUD functionality that turns your objects into JSON or XML, but also offer the ability to update that data from JSON or XML.
