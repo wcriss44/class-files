@@ -21,3 +21,18 @@ These methods are commonly known as CRUD:
     Delete
 
 When developing a restful API, you develop an API that follows the rest model. The goal is to have CRUD functionality that turns your objects into JSON or XML, but also offer the ability to update that data from JSON or XML.
+
+APIs are a great tool that allow programs to communicate with eachother. APIs are used by developers to turn their data into a language, or medium, that other programs will understand.
+
+Programs or software, such as a web browser, will send a request to the API. The API will then provide a response that contains the data. This data will be formatted in a way that most, if not all, programming languages can understand. Two common ways are JSON or XML.
+
+The state of the object on the server at the time of the request is what gets represented. If the state changes, the client will not know.
+
+HTTP uses error codes to inform the browser of problems. Some basic examples are:
+
+    3XX codes -- Resource has moved
+    4XX codes -- Browser issues (such as file not found, 404)
+    5XX codes -- Server side errors
+
+    200 response means: service is sucessful
+
