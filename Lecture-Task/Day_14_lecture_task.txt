@@ -128,7 +128,34 @@ The .get method waits for a request, that is to say it waits for the user to acc
 
 Notice also that we are returning a new ModleAndView. This should be familiar because we learned last week about MVC. As this would imply, we are returning a new Model and View based on our hashmap and home.html. Our controller is our Main, m is our model(data), and View is our home.html(what the user sees).
 
+Now lets expand our program slightly. Instead of having a static name declaration, lets set up a login that will capture the user name.
 
+Create a new HTML file named login.html in your templates, and add a form to it:
+    <form action="/login" method="post">
+        <input type ="text" placeholder ="Enter your name" name ="loginName"/>
+        <button type ="submmit">Login</button>
+    </form>
 
+Go back to your Main class and create a static user before your main method:
+    static User user;
+
+Inside your main method, add an if statement to your get lambda, after HashMap m - new HashMap();
+
+    if (user == null) {
+        return new ModelAndView(m, "login.html");
+    } else {
+        //the two lines form before.. m.put and return
+    }
+
+Lastly, add a lambda for post:
+    Spark.post(
+              "/login",
+              ((request, response) -> {
+                  String name = request.queryParams("loginName");
+                  user = new User(name);
+                  response.redirect("/");
+                  return "";
+          })
+    );
 
 
