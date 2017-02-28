@@ -1,6 +1,7 @@
 Keywords and things to look up:
     Anonymous
     Abstract
+    Concrete
     Lambda
     Thread
     Interface
@@ -82,6 +83,52 @@ Abstraction refers to knowning you can do things with out knowning how to do it.
 Threads are used to run multiple processes within your program. With out threads, our program will only be able to do one process at a time. Threads allow us to handle multiple processes simultaniously. Some issues that can arise with threads is syncronization amongst others.
 
 Runnable interface is a way to create a new thread.
+
+
+Now, lets take a look at spark
+
+Create a new project in Intellij named HelloSpark
+
+Add two libraries to your HelloSpark project:
+    com.sparkjava:spark-core:2.3
+    com.sparkjava:spark-template-mustache:2.3
+
+As you can notice, the spark import contains quite a few libraries. Reading through some of the importated libraries you can notice a server, servlet, and even a security package.
+
+Next, add a new folder under project structure -> modules
+
+Name this folder "Resources" and flag it as resources. This folder will contain resources for your web app.
+
+The last thing you need to do for this step is to create a folder within your resources folder named templates.
+
+add the following to your body: //you should be able to do this within any normal header or paragraph tag!
+
+Hello, {{name}}!
+
+As you can see, {{name}} is different then a traditional HTML file.
+
+Now we can write some spark code that will respond to a get request from a user. Lets take a look:
+
+inside of your Main class and main method, add the following:
+    Spark.init();
+
+    Spark.get(
+              "/"
+              ((request, response) -> {
+                  HashMap m = new HashMap();
+                  m.put("name", "Alice");
+                  return new ModelAndView(m, "home.html");
+          }),
+          new MustacheTemplateEngine()
+    );
+
+Notice that we are puting a key/value pair into a hashmap. The key is "name" and the value is "Alice". If Spark detects this key, the value will be displayed.
+
+The .get method waits for a request, that is to say it waits for the user to access the page. If it detects that the user request a page we will then use a lambda expression to pass in the functionality. That functionality is declaring a new hashmpa, putting the key/value in, and returning a new ModelAndView object with the hashmap we made as well as "home.html" which is the template we want to load. Lastly, we create a new mustachetemplate engine to run things.
+
+Notice also that we are returning a new ModleAndView. This should be familiar because we learned last week about MVC. As this would imply, we are returning a new Model and View based on our hashmap and home.html. Our controller is our Main, m is our model(data), and View is our home.html(what the user sees).
+
+
 
 
 
