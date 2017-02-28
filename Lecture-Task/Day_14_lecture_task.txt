@@ -1,0 +1,87 @@
+Keywords and things to look up:
+    Anonymous
+    Abstract
+    Lambda
+    Thread
+    Interface
+    FunctionalInterface
+        Runnable //A specific FI in Java
+
+So far we have been using predefined classes that we make. Wouldn't it be nice if we could could write code that deals with classes and changes on the fly? That is what anonymous classes and methods do for us.
+
+Anonymous methods use lambda expressions to accomplish this. Lambda expressions allow us to define the body of a method dynamically.
+
+Anonymous classes are classes that do not have a name.
+
+Lets do an example! Start Intellij and open your Zoo project from a few weeks ago.
+
+Once the project is open create a class named AnonymousClassExample
+
+In your name class, add a main method:
+    public static void main(String args[]){
+
+    }
+
+in your main method, add the following line:
+    //This line will allow you to change a method on the fly
+    Reptile alligator = new Reptile() {
+        @Override
+        public void makeSound(){
+
+        }
+    };
+
+Now give your ally-gator a name!
+    alligator.name = "Alligator";
+
+Lastly, call make sound:
+
+    alligator.makeSound();
+
+As you can see, the alligator made a sound that was not previsouly defined. Doing our code this way allowed us to change the method when we created our object.
+
+This is a good benefit because it will allow us to reuse a class with out having to write a new class each time. Another great benefit of creating our objects this way is it allows us to rapidly have unique objects with out having to have a class for each slightly different version.
+
+Anonymous methods work differently but are used for the same purpose.
+
+Create a new class called AnonymousMethodExample
+
+Inside of your new class, make a new main method:
+    public static void main(String args[]){
+
+    }
+
+Inside of the main method, create a method call:
+    sayHello();
+
+Next, create a lambda expression:
+    Runnable r2 = () -> {
+        System.out.println("Hello from a lambda!");
+    } // Runnable is an interface that we can call. It is predefined
+
+Now run your new newly created lambda expression:
+    r2.run(); //You are using the r2 variable's run method
+
+Next, lets add a method called sayHello() outside of main
+    public static void sayHello(){
+        System.out.println("Hello from named method!");
+    }
+
+Your class will do the following:
+    call a named method, named sayHello. This method will print a message.
+    Create a new thread named r2 and give it the functionality of printing a different message.
+    Call your r2 thread and do the run method.
+
+
+// command + click will show you the definition of a class or method. Try it on runnable!
+
+FunctionalInterfaces, such as Runnable, are intended to specify what methods a class should have. You can implement interfaces and use abstract methods from a functionalinterface.
+
+Abstraction refers to knowning you can do things with out knowning how to do it. The concrete part of a method is how to do it, or the logic behind it. The abstract aspect is knowing you can do it but not needing to know the concrete part.
+
+Threads are used to run multiple processes within your program. With out threads, our program will only be able to do one process at a time. Threads allow us to handle multiple processes simultaniously. Some issues that can arise with threads is syncronization amongst others.
+
+Runnable interface is a way to create a new thread.
+
+
+
