@@ -159,3 +159,13 @@ Lastly, add a lambda for post:
     );
 
 
+
+This works because your login.html page has a form that has an action and a method. The action to do when it is submitted is to send it to /login. The method it uses is post.
+
+    Your form will have two tags within it: input and button
+        input is of type text and is named loginName
+        button is a submit type
+
+On your code side, you are representing the user as an object created from a Class. Your post method is being called with the parameters (/login, lambda). The /login was declared as the path in your form, and the lambda details what your program does.
+
+Your lamda expression stores the query of loginName, which is your text input, into a String called name. It then assigns a new User object with the constructor that takes a string to set name to your user object that was declared as static. Lastly, it redirects to "/" which your get method is checking for. When your get method runs this time, user is not null so the else statement is executed, which then displays the name variable of user.
