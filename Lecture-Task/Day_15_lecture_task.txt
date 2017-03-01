@@ -1,3 +1,5 @@
+To see a history of a file with Intellij, go to file -> show history -> local history
+
 Mustache is a powerful template that appears simple from the surface. Let's review some of the things we can do.
 
 If you have a string that you want to print, this will work:
@@ -102,3 +104,164 @@ Lastly, we need to add a way to logout. For this, we need a form in our HTML as 
 
 
 Now run it and try your session out!
+
+Next we are going to build a game tracker. Create a new project in Intellij called GameTracker and add the following to your Main class, replacing your old main method:
+
+ public static HashMap<String, User> users = new HashMap<>();
+
+    public static void main(String[] args) {
+        Spark.init();
+        Spark.get(
+                "/",
+                ((request, response) -> {
+                    Session session = request.session();
+                    String name = session.attribute("userName");
+                    User user = users.get(name);
+
+                    HashMap m = new HashMap<>();
+                    if (user == null) {
+                        return new ModelAndView(m, "login.html");
+                    }
+                    else {
+                        return new ModelAndView(user, "home.html");
+                    }
+                }),
+                new MustacheTemplateEngine()
+        );
+        Spark.post(
+                "/login",
+                ((request, response) -> {
+                    String name = request.queryParams("loginName");
+                    User user = users.get(name);
+                    if (user == null){
+                        user = new User(name);
+                        users.put(name, user);
+                    }
+
+                    Session session = request.session();
+                    session.attribute("userName", name);
+
+                    response.redirect("/");
+                    return "";
+                })
+        );
+        Spark.post(
+                "/create-game",
+                ((request, response) -> {
+                    Session session = request.session();
+                    String name = session.attribute("userName");
+                    User user = users.get(name);
+                    if (user == null) {
+                        throw new Exception("User is not logged in");
+                    }
+
+                    String gameName = request.queryParams("gameName");
+                    String gameGenre = request.queryParams("gameGenre");
+                    String gamePlatform = request.queryParams("gamePlatform");
+                    int gameYear = Integer.valueOf(request.queryParams("gameYear"));
+                    Game game = new Game(gameName, gameGenre, gamePlatform, gameYear);
+
+                    user.games.add(game);
+
+                    response.redirect("/");
+                    return "";
+                })
+        );
+        Spark.post(
+                "/logout",
+                ((request, response) -> {
+                    Session session = request.session();
+                    session.invalidate();
+                    response.redirect("/");
+                    return "";
+                })
+        );
+    }
+
+
+Next, create a User class with the following in it:
+
+        String name;
+    ArrayList<Game> games = new ArrayList<>();
+
+    public User(String name){
+        this.name = name;
+    }
+
+Our next task is to create a class to track games:
+
+        String name;
+    String genre;
+    String platform;
+    int releaseYear;
+
+    public Game(String name, String genre, String platform, int releaseYear){
+        this.name = name;
+        this.genre = genre;
+        this.platform = platform;
+        this.releaseYear = releaseYear;
+    }
+
+Now we just need two HTML pages.
+
+The first page, home, should have this:
+
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <title>Home</title>
+  </head>
+  <body>
+  <form action="/logout" method="post">
+      <button type="submit">Logout</button>
+  </form>
+
+  <form action="/create-game" method="post">
+      <input type="text" placeholder="Game name" name="gameName" width="200"/>
+      <select name="gameGenre">
+          <option selected disabled>Genre</option>
+          <option value="adventure">Adventure</option>
+          <option value="rpg">RPG</option>
+          <option value="strategy">Strategy</option>
+          <option value="shooter">Shooter</option>
+      </select>
+      <select name="gamePlatform">
+          <option selected disabled>Platform</option>
+          <option value="pc">PC</option>
+          <option value="ps4">PS4</option>
+          <option value="xbone">XBox One</option>
+          <option value="wiiu">Wii U</option>
+      </select>
+      <input type="number" placeholder="Release Year" name="gameYear"/>
+      <button type="submit">Submit</button>
+  </form>
+
+  <ol>
+      {{#games}}
+      <li>{{name}} - {{genre}} - {{platform}} - {{releaseYear}}</li>
+      {{/games}}
+  </ol>
+  </body>
+  </html>
+
+The last HTML page, login, should have this:
+
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <title>login</title>
+  </head>
+  <body>
+      <form action="/login" method="post">
+          <input type="text" placeholder="Enter your name" name="loginName"/>
+          <button type="submit">Login</button>
+      </form>
+
+  </body>
+  </html>
+
+
+Now run your game tracking app!
+
