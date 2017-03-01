@@ -1,0 +1,104 @@
+Mustache is a powerful template that appears simple from the surface. Let's review some of the things we can do.
+
+If you have a string that you want to print, this will work:
+    String name;        //this is your Java
+    Welcome, {{name}}! //this is your HTML
+
+If you want to do an ArrayList, you can do this:
+  ArrayList<String> names;  //your Java
+  {{#names}}{{.}}{{/names}} //Your HTML
+
+For objects, there is even more power! You can print the variables of an object by doing the following:
+
+  Message message;
+
+  //Class     variable      variable    end class
+  {{#message}}{{text}} by {{username}}{{/message}}
+
+  //These variables are stored in your class
+
+For an arraylist of objects,
+
+   ArrayList<Message> messages;
+
+   // Arraylist   variables in class       end arraylist
+   {{#messages}} {{text}} by {{username}} {{/message}}
+
+These conditionals check to see if the variable is null. This is a great way to avoid printing some static HTML stuff, such as the "Welcome, " part displayed blow. There is no code done in Java for this.
+
+    Conditional (Print a message if it is the case.....)
+
+      {{#name}}Welcome, {{name}}!{{/name}}
+
+    Conditional (Print a message if it is NOT the case.....)
+
+      {{^name}}Please login.{{/name}}
+
+Multi-user support for Spark is a great way of adding more functionality to your app. Lets take a look at adding this in the form of sessions.
+
+Session is a class that keeps track of which browser is making a request. It can also keep track of specific objects related to that session. You can then tie one request to another request from the same user. This is important because otherwise get and post request would have no way of tracking who made the request. Sessions are not what establish a user's account. Instead, sessions are what enable more then one user to do things at the same time.
+
+Now we will add session support to our HelloSpark project. First, change the User variable to be a HashMap.
+
+Next, we will change the post method to reflect the following:
+
+            Spark.post(
+                "/login",
+                ((request, response) -> {
+                    String name = request.queryParams("loginName");
+                    User user = users.get(name);
+                    if (user == null) {
+                        user = new User(name);
+                        users.put(name, user);
+                    }
+
+                    Session session = request.session();
+                    session.attribute("userName", name);
+
+                    response.redirect("/");
+                    return "";
+                })
+        );
+
+Our next task is to update the Get route so it will get the correct User object from the HashMap. Change your Get route to reflect the following:
+
+            Spark.get(
+                "/",
+                ((request, response) -> {
+                    HashMap m = new HashMap();
+
+                    Session session = request.session();
+                    String userName = session.attribute("userName");
+                    User user = users.get(userName);
+
+                    if (user == null) {
+                        return new ModelAndView(m, "login.html");
+                    } else {
+                        m.put("name", user.name);
+                        return new ModelAndView(m, "home.html");
+                    }
+                }),
+                new MustacheTemplateEngine()
+        );
+
+Lastly, we need to add a way to logout. For this, we need a form in our HTML as well as a route. Lets take a look:
+
+            //This is your HTML
+    <form action="/logout" method="post">
+        <button type="submit">Logout</button>
+    </form>
+
+            //This is a post route
+        Spark.post(
+                "/logout",
+                ((request, response) -> {
+                    Session session = request.session();
+                    session.invalidate();
+                    response.redirect("/");
+                    return "";
+                })
+        );
+
+
+
+Now run it and try your session out!
