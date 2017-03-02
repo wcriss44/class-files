@@ -1,4 +1,28 @@
-Today's lecture is going to focus on using some of the mroe advanced features of Spark. Lets start by creating a new project called ForumWeb. Once your project is open, import the following libraries:
+Today's lecture is going to focus on using some of the more advanced features of Spark.
+
+Key notes from lecture:
+  Think about things in terms of system boundaries. This will help you to understand what is happening in code that you are having trouble with. Take for example the get / route below. We know that it returns an objct, called ModelAndView. Specifically, it returns a new one that is given two objects: m, and "home.html".
+
+  So what is m and "home.html"? m is a hashmap that was declared in the get / route. "home.html" is a String that, as the name would suggest, represents the home.html file.
+
+  In this sense, we can then find out more about our hashmap, named m. We can follow through the method, in a reverse order, to see the flow of data and understand the logic behind the method.
+
+
+  ---
+
+  You can send data to the server by using key/value pair. This is done with a question mark and equal sign. For example:
+
+  /?replyId={{id}}
+
+
+  When you do a get request, your parameters are sent through the URL
+
+  When you do a post request, you send your data packaged as a payload
+
+  When a web browser request an address, it will always be a get request. Likewise, the only way you can do a post request is through a form in HTML.
+
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Lets start by creating a new project called ForumWeb. Once your project is open, import the following libraries:
     com.sparkjava:spark-core:2.3
     com.sparkjava:spark-template-mustache:2.3
 
