@@ -1,0 +1,125 @@
+Before we start, lets talk about the layers of the internet. There is quite a few thigns going on, but the basic idea is that we interact with the internet by sending electrical data over wires. This is possible because of the layers that make up the internet. Here are four layers that you should be aware of:
+
+Physical layer (hardware)
+    -Wireless
+    -Electrical (ethernet, coaxial)
+    -Fiber optics
+Internet layer (packets)
+    -IPv4
+    -IPv6
+Transport layer (reliability)
+    -UDP (checksum)
+    -TCP (checksum and retransmission)
+Application layer (end users)
+    -ASCII
+    -UTF-8
+    -HTTP
+    -HTTP/2
+
+Lets go back to our forumweb project. Open it in intellij and add the following HTML to your current html page:
+
+<html>
+<body>
+...
+
+{{#userName}}
+Welcome, {{.}}!
+<form action="/logout" method="post">
+    <button type="submit">Logout</button>
+</form>
+<br>
+<form action="/create-message" method="post">
+    <input type="text" placeholder="Enter your message" name="messageText" width="200"/>
+    <button type="submit">Post Message</button>
+</form>
+{{/userName}}
+
+...
+</body>
+</html>
+
+
+Next, add the following post route to your Main method:
+
+        Spark.post(
+                "/create-message",
+                ((request, response) -> {
+                    Session session = request.session();
+                    String userName = session.attribute("userName");
+                    if (userName == null) {
+                        throw new Exception("Not logged in.");
+                    }
+
+                    String text = request.queryParams("messageText");
+                    if (text == null) {
+                        throw new Exception("Didn't get necessary query parameters.");
+                    }
+
+                    Message m = new Message(messages.size(), -1, userName, text);
+                    messages.add(m);
+
+                    response.redirect("/");
+                    return "";
+                })
+        );
+This will allow you to post top level messages, but wouldn't it be nice if you could post replies? We can do this by sending down the current page's replyId onto the template. Add the following three lines to your "/" get route:
+
+                    m.put("messages", threads);
+                    m.put("userName", userName);
+                    m.put("replyId", replyIdNum);
+
+Now modify your HTML to allow it to send back the correct replyId through a hidden input field. As always, add what you need out of this code block.:
+
+{{#userName}}
+Welcome, {{.}}!
+<form action="/logout" method="post">
+    <button type="submit">Logout</button>
+</form>
+<br>
+<form action="/create-message" method="post">
+    <input type="text" placeholder="Enter your message" name="messageText" width="200"/>
+    <input type="hidden" value="{{replyId}}" name="replyId"/>
+    <button type="submit">Post Message</button>
+</form>
+{{/userName}}
+
+...
+</body>
+</html>
+
+Next, lets modify the post route to use this hidden data rather then a -1 as the replyId. Add and replace as needed to your /create-message post route:
+
+        Spark.post(
+                "/create-message",
+                ((request, response) -> {
+                    ...
+
+                    String text = request.queryParams("messageText");
+                    String replyId = request.queryParams("replyId");
+                    if (text == null || replyId == null) {
+                        throw new Exception("Didn't get necessary query parameters.");
+                    }
+                    int replyIdNum = Integer.valueOf(replyId);
+
+                    Message m = new Message(messages.size(), replyIdNum, userName, text);
+                    messages.add(m);
+
+                    response.redirect("/");
+                    return "";
+                })
+        );
+
+Lastly, lets make it redirect to the referrer URL, that way you are not redirected back to the top-level of the forum site. Change the last two lines of your "/create-message" post route to reflect the following:
+
+                    response.redirect(request.headers("Referer"));
+                    return "";
+
+Now we can pretend that we are deploying this as a real application by creating a JAR file. Our notes tell us that this type of JAR file is sometimes called a "fat" JAR because it contains everything we need to run our code:
+
+File -> Project Structure...
+Click "Artifacts" and then the plus button
+JAR -> From modules with dependencies...
+Choose the main class and click OK
+Build -> Build Artifacts...
+
+You can try running it by typing java -jar out/artifacts/FormWeb_jar/ForumWeb.jar
