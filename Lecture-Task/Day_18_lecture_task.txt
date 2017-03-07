@@ -1,0 +1,55 @@
+SQL and database
+SQL - Structured Query Language
+RDBMS - Relational Database Management Systems
+DDL - Data Definition Language
+DML - Data Modification Language
+
+What are some benefits of using a database, and why would we want to use one?
+    -They allow us to manage large amounts of data, with the ability to retrieve the data quickly
+    -They have the ability to be added to with out needing to rewrite the entire database (as opposed to a file)
+    -They support multi users, allowing more than one program to write and read from the database
+
+SQL is a popular database type. SQL was developed by IBM in the 70s
+
+Some basic SQL commands:
+    CREATE TABLE
+    INSERT  create a record in the database -
+    SELECT  Select data from the database    |  These four are CRUD
+    UPDATE  Update data in the database      |
+    DELETE  remove data from the database   -
+
+Some of the variables in SQL:
+    VARCHAR: (String in Java)
+    BOOLEAN: (boolean in Java)
+    INT:     (int in Java)
+    DOUBLE:  (double in Java)
+
+Some commands that you might use in SQL, based on the TextAdventure game we made:
+
+    CREATE TABLE players (name VARCHAR, is_alive BOOLEAN, score INT, health DOUBLE)
+
+    INSERT INTO players VALUES('Bob', true, 0, 100.0)
+
+    INSERT INTO players VALUES ('Bob', true, 0, 100.0)
+
+    SELECT * FROM players WHERE name = 'Bob'
+
+    UPDATE players SET is_alive = FALSE WHERE name = 'Bob'
+
+    DELETE FROM players WHERE name = 'Bob'
+
+Notice with the example above, all SQL commands are capital and non-SQL commands are snake_case
+The * is used to select all fields, or you can specify, with comma seperation, which fields you want to select
+
+Another thing to notice is that we can delete entries in a table based on a specified field. This is powerful because we can have a unique identifier that only one entery will be removed, or choose to delete al large collection of data, such as all players with is_alive false. The same concept can be seen with Update, allowing us to update single or multi entries witht he same command. Keep this in mind!
+
+As a side note, you can use limit in place of where, followed by a number, when selecting a record.
+
+
+Lets make an example database program. Open Intellij and create a new project called HelloDatabase. Using Maven, add the following library: com.h2database:h2:1.4.191
+
+Next, add the following line to your program in main. Make sure to catch the exception or declare that main throws an exception. Also, don't forget your imports:
+
+  Server.createWebServer().start();
+
+This will start the webserver for H2. H2 is a lightweight
