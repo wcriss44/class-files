@@ -27,3 +27,168 @@ A working example:
 
 Now lets open our ForumWeb project and and import the following library using maven:
     com.h2database:h2:1.4.191
+
+We will use TDD to write our SQL methods and verify they work.
+
+Lets start by copying the three methods below into our forumweb project. Make sure to import the things you need. Also, notice that they are static methods, so create them outside of your main method:
+
+    public static void createTables(Connection conn) throws SQLException {
+        Statement stmt = conn.createStatement();
+        stmt.execute("CREATE TABLE IF NOT EXISTS users (id IDENTITY, name VARCHAR, password VARCHAR)");
+        stmt.execute("CREATE TABLE IF NOT EXISTS messages (id IDENTITY, user_id INT, reply_id INT, text VARCHAR)");
+    }
+    public static void insertUser(Connection conn, String name, String password) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO users VALUES (NULL, ?, ?)");
+        stmt.setString(1, name);
+        stmt.setString(2, password);
+        stmt.execute();
+    }
+
+    public static User selectUser(Connection conn, String name) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE name = ?");
+        stmt.setString(1, name);
+        ResultSet results = stmt.executeQuery();
+        if (results.next()) {
+            int id = results.getInt("id");
+            String password = results.getString("password");
+            return new User(id, name, password);
+        }
+        return null;
+    }
+Now we can start testing things. Lets import the Junit testing library through maven:
+    junit:junit:4.12
+
+Now create a folder named src/test and make the folder green by labeling it as a test folder. Next, navigate to your main class and go to Navigate ->Test and select create new test. Select JUnit and create the Test class.
+
+In your new MainTest class, create a method for your tests to create a database connection. We'll make it use an in-memory database for tests:
+
+        public Connection startConnection() throws SQLException {
+        Connection conn = DriverManager.getConnection("jdbc:h2:mem:test");
+        Main.createTables(conn);
+        return conn;
+    }
+
+Next, create a method to test inserting and selecting a User:
+        @Test
+        public void testUser() throws SQLException {
+        Connection conn = startConnection();
+        Main.insertUser(conn, "Alice", "");
+        User user = Main.selectUser(conn, "Alice");
+        conn.close();
+        assertTrue(user != null);
+    }
+
+Now we can run our test and make sure that they pass. After you get your test to pass, return to the main class and write two static messages to insert and select a single Message:
+
+    public static void insertMessage(Connection conn, int userId, int replyId, String text) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO messages VALUES (NULL, ?, ?, ?)");
+        stmt.setInt(1, userId);
+        stmt.setInt(2, replyId);
+        stmt.setString(3, text);
+        stmt.execute();
+    }
+
+    public static Message selectMessage(Connection conn, int id) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM messages INNER JOIN users ON messages.user_id = users.id WHERE messages.id = ?");
+        stmt.setInt(1, id);
+        ResultSet results = stmt.executeQuery();
+        if (results.next()) {
+            int replyId = results.getInt("messages.reply_id");
+            String name = results.getString("users.name");
+            String text = results.getString("messages.text");
+            return new Message(id, replyId, name, text);
+        }
+        return null;
+    }
+
+We can then write some test for this back in MainTest:
+
+    @Test
+    public void testMessage() throws SQLException {
+        Connection conn = startConnection();
+        Main.insertUser(conn, "Alice", "");
+        User user = Main.selectUser(conn, "Alice");
+        Main.insertMessage(conn, user.id, -1, "Hello, world!");
+        Message message = Main.selectMessage(conn, 1);
+        conn.close();
+        assertTrue(message != null);
+    }
+
+Lastly, we need to write a method in our Main class that gets replies to a given message's ID:
+
+    public static ArrayList<Message> selectReplies(Connection conn, int replyId) throws SQLException {
+        ArrayList<Message> messages = new ArrayList<>();
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM messages INNER JOIN users ON messages.user_id = users.id WHERE messages.reply_id = ?");
+        stmt.setInt(1, replyId);
+        ResultSet results = stmt.executeQuery();
+        while (results.next()) {
+            int id = results.getInt("messages.id");
+            String name = results.getString("users.name");
+            String text = results.getString("messages.text");
+            Message message = new Message(id, replyId, name, text);
+            messages.add(message);
+        }
+        return messages;
+    }
+
+We then need to do a Test for for this method:
+
+      @Test
+      public void testReplies() throws SQLException {
+        Connection conn = startConnection();
+        Main.insertUser(conn, "Alice", "");
+        Main.insertUser(conn, "Bob", "");
+        User alice = Main.selectUser(conn, "Alice");
+        User bob = Main.selectUser(conn, "Bob");
+        Main.insertMessage(conn, alice.id, -1, "Hello, world!");
+        Main.insertMessage(conn, bob.id, 1, "This is a reply!");
+        Main.insertMessage(conn, bob.id, 1, "This is another reply!");
+        ArrayList<Message> replies = Main.selectReplies(conn, 1);
+        conn.close();
+        assertTrue(replies.size() == 2);
+    }
+
+
+If all of these test pass we can start using them within our application:
+
+Lets start by adding the these three lines to your main method, at the top of it. Make sure to specify that Main now throws SQLException:
+
+        Server.createWebServer().start();
+        Connection conn = DriverManager.getConnection("jdbc:h2:./main");
+        createTables(conn);
+
+In your /login post route use your selectUser and insertUser method:
+
+              User user = selectUser(conn, userName);
+        if (user == null) {
+            insertUser(conn, userName, "");
+        }
+
+In your /create-message, use the selectUser and insertMessage:
+
+    public static void main(String[] args) throws SQLException {
+        ...
+        Spark.post(
+                "/create-message",
+                ((request, response) -> {
+                    ...
+
+                    User user = selectUser(conn, userName);
+                    insertMessage(conn, user.id, replyIdNum, text);
+
+                    ...
+                })
+        );
+    }
+
+The last step is to use selectReplies in your / get route. Remove the for loop and change your arraylist assignment for threads so it reflects this:
+
+                HashMap m = new HashMap();
+                ArrayList<Message> threads = selectReplies(conn, replyIdNum);
+                m.put("messages", threads);
+                m.put("userName", userName);
+                m.put("replyId", replyIdNum);
+                return new ModelAndView(m, "home.html");
+            }),
+            new MustacheTemplateEngine()
+    );
