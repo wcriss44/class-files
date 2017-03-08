@@ -2,6 +2,28 @@ Today we will talk about JOINs in SQL. Before we start, it is important to under
 
 Inner join: intersection of two tables (what is in this table AND that table)
 
-Outter Excluding join: union of two tables (what is unique to this table AND unique to that table)
+Outer Excluding join: union of two tables (what is unique to this table AND unique to that table)
 
-FULL OUT JOIN
+FULL OUTER JOIN (also known as FULL JOIN): The set of everything in both tables
+
+LEFT JOIN: The set of all entries from the left. If the left side does not have a matching entry on the right it will get a NULL value for the right fields.
+
+RIGHT JOIN: The set of all entries from the right. If the right side does not have a matching entry on the left it will get a NULL value for the left fields.
+
+The syntax:
+
+    SELECT [the fields you want]
+    FROM [left table]
+    [type] JOIN [right table]
+    ON [left value = right value]
+    WHERE [conditions you want]
+
+A working example:
+
+    SELECT users.name, games.name, games.genre, games.release_year
+    FROM users
+    JOIN games
+    ON users.id = games.user_id
+
+Now lets open our ForumWeb project and and import the following library using maven:
+    com.h2database:h2:1.4.191
