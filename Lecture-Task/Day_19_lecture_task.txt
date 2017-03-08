@@ -1,0 +1,7 @@
+Today we will talk about JOINs in SQL. Before we start, it is important to understand what joins are in the first place. Joins are a way of merging two sets together, using set theory. Lets look at the common types:
+
+Inner join: intersection of two tables (what is in this table AND that table)
+
+Outter Excluding join: union of two tables (what is unique to this table AND unique to that table)
+
+FULL OUT JOIN
