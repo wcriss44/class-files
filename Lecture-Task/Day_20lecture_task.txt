@@ -1,0 +1,111 @@
+Today we are going to build a crud based web app from scratch. To do this, we decided (almost democratically) on a type of app. Our web app will be a player list generator that alows a user to sign up and add favorite songs each day. At the end up the week a playlist is generated for each letter.
+
+To start, lets break down this project into user stories. This is a high level version, so let's take a look:
+
+As a user, I expect to:
+-----------------------
+  -Create account
+  -sign in/out
+  -suggest songs
+  -vote on songs
+  -see vote count per songs
+
+  -Generate a playlist?
+  -Validate suggested songs
+
+Lets start with suggest songs. To do this, break it down into a smaller problem. What steps are required?
+
+The easiest way to do this is give the user two text boxes, one for artist and one for title, as well as a button to suggest.
+
+When the suggest button is clicked, we will need to save the song and who suggested it. This will add it to songs.
+
+What is would this take? This would require the user to do a get request, and we give the user a page with this view.
+
+We also need to make sure we have a post route on our server that matches the form on the html page. The action of this form is the route of our post request.
+
+First, add the following code to get your database and spark server up:
+        Server.createWebServer().start();
+        Connection connection = DriverManager.getConnection("jdbc:h2:./main");
+        Statement statement = connection.createStatement();
+        statement.execute("CREATE TABLE IF NOT EXISTS users(id IDENTITY, name VARCHAR, password VARCHAR, interest VARCHAR)");
+        statement.execute("CREATE TABLE IF NOT EXISTS books(id IDENTITY, title VARCHAR, genre VARCHAR, author VARCHAR, ISBN10 INTEGER)");
+
+        Spark.staticFileLocation("/styles");
+        Spark.init();
+
+Let's start with a get route:
+
+        Spark.get(
+                "/",
+                ((request, response) -> {
+                    HashMap m = new HashMap<>();
+                    Session session = request.session();
+                    String userName = session.attribute("userName");
+                    if (userName == null){
+                        return new ModelAndView(m, "index.html");
+                    } else {
+                        //code here
+                    }
+                    return new ModelAndView(m, "index.html");
+                }),
+                new MustacheTemplateEngine()
+        );
+
+Next, add a post route:
+        Spark.post(
+                "/enter-song",
+                ((request, response) -> {
+                    Session session = request.session();
+                    String userName = session.attribute("userName");
+                    if (userName == null){
+                        response.redirect("/");
+                        return "";
+                    } else {
+
+                        response.redirect("");
+                        return "";
+                    }
+                })
+        );
+The last thing is to add some HTML:
+
+        <!DOCTYPE html>
+        <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <title>Alpha Tunez</title>
+          </head>
+          <body>
+              <form action="/enter-song" method="post">
+                  <label for="author">Author:</label>
+                  <input type="text" name="author" id="author">
+                  <label for="title">Title: </label>
+                  <input type="text" name="title" id="title">
+                  <button type="submit">Suggest</button>
+              </form>
+          </body>
+        </html>
+
+Now you can run it and test your page.
+
+Our next step is to model our data so we can build our database. Our database will need to track some stuff. LEts look at how this would be:
+
+users:
+    -id
+    -userName
+    -password
+
+songs:
+    -id
+    -title
+    -artist
+    -user_id
+
+What about our votes system? How will we track these? We should be aware of the fact that our previous tables have a one to many ration. That is to say, one user can have many songs, and one song relates to many users. Votes are slightly different. Votes are many to many because many users can vote on the same song and songs have many users. We should have a different table for votes:
+
+votes:
+    -id
+    -rating (1-5?)
+    -user_id
+    -song_id
+
