@@ -109,3 +109,74 @@ votes:
     -user_id
     -song_id
 
+Now that we know how we will model our data for the database, lets add a method for it:
+
+    public static Connection getConnection() throws SQLException{
+        Connection connection = DriverManager.getConnection("jdbc:h2:./main");
+    }
+    public static void createTables(Connection connection) throws SQLException{
+        Statement statement = connection.createStatement();
+        statement.execute("CREATE TABLE IF NOT EXISTS users(id IDENTITY, name VARCHAR, password VARCHAR)");
+        statement.execute("CREATE TABLE IF NOT EXISTS songs(id IDENTITY, title VARCHAR, artist VARCHAR,  user_id  INTEGER )");
+        statement.execute("CREATE TABLE IF NOT EXISTS votes(id IDENTITY, rating VARCHAR, song_ID INTEGER,  user_id  INTEGER )");
+
+    }
+
+Now you can change the Connection connection = .... line in your main method to use the getConnection();
+
+The next step is to write an insert method for our song:
+
+    public static void insertSong(Connection connection, String author, String title, int user_id) throws SQLException{
+        PreparedStatement statement = connection.prepareStatement("INSERT INTO songs VALUES(NULL, ? ? ?) ");
+        statement.setString(1, author);
+        statement.setString(2,title);
+        statement.setInt(3, user_id);
+        statement.execute();
+    }
+
+Now we can call this in our post route for /enter-song. Change your post method to reflect this:
+
+        Spark.post(
+                "/enter-song",
+                ((request, response) -> {
+                    Session session = request.session();
+                    String userName = session.attribute("userName");
+                    if (userName == null){
+                        response.redirect("/");
+                        return "";
+                    } else {
+                        String author = request.queryParams("author");
+                        String title = request.queryParams("title");
+
+                        //int user_id = request.queryParams("user_id")
+                        // OR.... int user_id = session.attribute("user_id")
+                        //TODO: Change user_id parameter to variable later
+                        insertSong(connection, author, title, 1);
+                        response.redirect("");
+                        return "";
+                    }
+                })
+        );
+
+Now create a User class that stores a name and id. Create your setters and getters, as well as a constructor.
+
+Next, change your insertSong method to have the following:
+
+    public static void insertSong(Connection connection, String author, String title) throws SQLException{
+        PreparedStatement statement = connection.prepareStatement("INSERT INTO songs VALUES(NULL, ? ? ?) ");
+        User user = currentUser();
+        statement.setString(1, author);
+        statement.setString(2,title);
+        statement.setInt(3, user.getUserId());
+        statement.execute();
+    }
+
+This will make things more dynamic, but we need to have a currentUser method:
+
+    public static User currentUser(){
+        return new User(1, "jdabbs");
+    }
+
+_________________________________________________________________________________________________________
+
+I stopped adding code here and followed along with instruction from James.
