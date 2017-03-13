@@ -1,0 +1,123 @@
+Today's topic is Spring
+
+The main problem that Spring solves is class dependence. Spring uses annotations to link classes together through wires while injecting needed objects. This is known as Dependency Injection.  Lastly, Spring uses Inversion of Control.
+
+Dependency Injection: Spring detects what objects we need and injects them for us.
+
+Inversion of Control: Giving control to the container to get instance of object.
+
+Lets start a spring project. Go to:
+ http://start.spring.io
+
+ Next, do the following on the site:
+
+ Choose "Gradle Project"
+Group is com.theironyard and artifact is HelloSpring
+Click "Switch to the full version"
+Check the following options:
+    Web
+    Mustache
+    DevTools
+
+Download and unzip the project
+
+Next, open your porject in Intellij. Make sure to be aware of the project coming from external sources, as well as being from gradel.
+
+Once you finish getting your project loaded, create a new HTML file in resources/templates with the following body:
+
+<html>
+<body>
+{{#person}}
+{{name}} from {{city}}, {{age}} years old
+{{/person}}
+</body>
+</html>
+
+NExt, create a controller for spring. Create a class named HelloSpringController.java with this code:
+
+@Controller
+public class HelloSpringController {
+    @RequestMapping(path = "/person", method = RequestMethod.GET)
+    public String person(Model model, String name, String city, int age) {
+        Person p = new Person(name, city, age);
+        model.addAttribute("person", p);
+        return "person";
+    }
+}
+
+Go to http://localhost:8080/person?name=Alice@city=Charleston@age=30 to verify. Next, add a person class:
+
+public class Person {
+    String name;
+    String city;
+    int age;
+
+    public Person(String name, String city, int age) {
+        this.name = name;
+        this.city = city;
+        this.age = age;
+    }
+}
+
+Now lets add a controller for Json:
+
+@RestController
+public class HelloSpringJsonController {
+    @RequestMapping(path = "/person.json", method = RequestMethod.GET)
+    public Person jsonHome(String name, String city, int age) {
+        return new Person(name, city, age);
+    }
+}
+
+Notice that the above statement is using an @RestController, not @Controller. Try it out by running: http://localhost:8080/person.json?name=Alice&city=Charleston&age=30
+
+Next we can make a simple login system to show POST routes in Spring. To do this, create a home.html file in templates/resources with the following:
+
+<html>
+<body>
+{{#name}}Hello, {{.}}!{{/name}}
+
+{{^name}}
+<form action="/login" method="post">
+    <input type="text" placeholder="Enter your name" name="userName"/>
+    <button type="submit">Login</button>
+</form>
+{{/name}}
+</body>
+</html>
+
+Now add a / route to HelloSpringController:
+
+@Controller
+public class HelloSpringController {
+    ...
+
+    @RequestMapping(path = "/", method = RequestMethod.GET)
+    public String home(Model model, HttpSession session) {
+        model.addAttribute("name", session.getAttribute("userName"));
+        return "home";
+    }
+}
+
+Now create the post route for your controller:
+
+@Controller
+public class HelloSpringController {
+    ...
+
+    @RequestMapping(path = "/login", method = RequestMethod.POST)
+    public String login(HttpSession session, String userName) {
+        session.setAttribute("userName", userName);
+        return "redirect:/";
+    }
+}
+
+
+It is important to note that the return is "redirect:/".... this will redirect the browse to the / GET path.
+
+Now lets create a JAR. We chose to use Gradle, so the process is slightly different. The process for creating  JAR is:
+
+Click the Gradle tab on the right edge of the window
+HelloSpring -> Tasks -> build -> build
+It will be in build/libs
+
