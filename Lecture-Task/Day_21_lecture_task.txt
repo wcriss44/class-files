@@ -1,10 +1,16 @@
 Today's topic is Spring
 
+As a side note, it might be easier to do a maven project, not a gradle one.
+
 The main problem that Spring solves is class dependence. Spring uses annotations to link classes together through wires while injecting needed objects. This is known as Dependency Injection.  Lastly, Spring uses Inversion of Control.
 
-Dependency Injection: Spring detects what objects we need and injects them for us.
+    Dependency Injection: Spring detects what objects we need and injects them for us.
 
-Inversion of Control: Giving control to the container to get instance of object.
+    Inversion of Control: Giving control to the container to get instance of object.
+
+    The @Controller allows you to define a controller class that will handle traditional web app request, such as get or post.
+
+    The @RestController allows you build a Restful API that web services can interact with. This allows you to do things like return a json object when a web service does a get request.
 
 Lets start a spring project. Go to:
  http://start.spring.io
