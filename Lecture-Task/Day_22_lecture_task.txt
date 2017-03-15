@@ -3,6 +3,8 @@ Data Dictionary - Document that defines the tables and columns
 RDBMS - Relational Database Management System
 ORM - Object Relational Mapping
 JPA - Java Persistance Api
+DDL - Data Definition Language [defines tables/columns]
+DML - Data Modification Language [defines query/input]
 
 
 Hibernate is an Object Relational Mapping tool (ORM). It  helps take data from a database and turn it into an object. Hibernate accomplishes this through mapping, as the name would imply.
@@ -53,8 +55,12 @@ Import your project into Intellij. In your terminal, run psql and create a datab
 
 Next, and this is important, open src/main/resources/application.properties and add the following two lines:
 
-spring.datasource.url=jdbc:postgresql://localhost:5432/gametracker
-spring.jpa.generate-ddl=true
+    spring.datasource.url=jdbc:postgresql://localhost:5432/gametracker
+    spring.jpa.generate-ddl=true
+
+You should note that the lines above have the following format:
+    spring.datasource.url = jdbc:[type]:[address/path]
+    spring.jpa.generate-ddl=true [specifies a jpa database]
 
 Now that your project is ready, lets start by creating an entity. An entity is a normal class that Hibernate will automatically create a table for. Create a new class called Game.java. The id column is given a special annotation so it can auto increment. The other columns should be marked with @Column(nullable = false). This ensures that null values aren't accidentlly inserted.
 
@@ -190,4 +196,5 @@ public class GameTrackerController {
     ...
 }
 
+If you run into issues with the assignment of games.findAll(), it is likely that you need to typecast the return from games.findAll(). To do this, add (List<Game>) in front of games.findAll(), but before gameList =.
 Now run your program!
