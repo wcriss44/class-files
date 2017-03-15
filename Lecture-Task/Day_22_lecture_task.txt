@@ -2,6 +2,7 @@ Important terms:
 Data Dictionary - Document that defines the tables and columns
 RDBMS - Relational Database Management System
 ORM - Object Relational Mapping
+JPA - Java Persistance Api
 
 
 Hibernate is an Object Relational Mapping tool (ORM). It  helps take data from a database and turn it into an object. Hibernate accomplishes this through mapping, as the name would imply.
@@ -24,6 +25,7 @@ Here are the commands to interact with postgres on the command line:
 CREATE DATABASE [name]; creates a new database
 \c [name] connects to the database
 \dt lists the tables in the connected database
+\q to quit
 
 It is important to notice that these commands are different than the ones used in H2. For instance, id IDENTITY is id SERIAL, and NULL is now DEFAULT. It is also important that each command is followed by a semi-colon.
 
@@ -54,5 +56,138 @@ Next, and this is important, open src/main/resources/application.properties and 
 spring.datasource.url=jdbc:postgresql://localhost:5432/gametracker
 spring.jpa.generate-ddl=true
 
+Now that your project is ready, lets start by creating an entity. An entity is a normal class that Hibernate will automatically create a table for. Create a new class called Game.java. The id column is given a special annotation so it can auto increment. The other columns should be marked with @Column(nullable = false). This ensures that null values aren't accidentlly inserted.
+
+In your Game class, add the following code:
+
+@Entity
+@Table(name = "games")
+public class Game {
+    @Id
+    @GeneratedValue
+    int id;
+
+    @Column(nullable = false)
+    String name;
+
+    @Column(nullable = false)
+    String platform;
+
+    @Column(nullable = false)
+    String genre;
+
+    @Column(nullable = false)
+    int releaseYear;
+
+    public Game() {
+    }
+
+    public Game(String name, String platform, String genre, int releaseYear) {
+        this.name = name;
+        this.platform = platform;
+        this.genre = genre;
+        this.releaseYear = releaseYear;
+    }
+}
+
+Make sure to include the following import:
+
+import javax.persistence.*;
+
+Now restart your project and go back to psql. Check to make sure that the table was created. You can run these commands:
+
+    psql => \l => \c games => \dt => SELECT * FROM games
+
+If everything goes right, you should see a table with no entries that contains the columns you designated through hibernate
+
+Next, add some html:
+
+    <html>
+    <body>
+    <form action="/add-game" method="post">
+        <input type="text" placeholder="Name" name="gameName"/>
+        <select name="gameGenre">
+            <option selected disabled>Genre</option>
+            <option value="adventure">Adventure</option>
+            <option value="rpg">RPG</option>
+            <option value="strategy">Strategy</option>
+            <option value="shooter">Shooter</option>
+        </select>
+        <select name="gamePlatform">
+            <option selected disabled>Platform</option>
+            <option value="pc">PC</option>
+            <option value="ps4">PS4</option>
+            <option value="xbone">XBox One</option>
+            <option value="wiiu">Wii U</option>
+        </select>
+        <input type="number" placeholder="Release Year" name="gameYear"/>
+        <button type="submit">Add Game</button>
+    </form>
+
+    <ol>
+    {{#games}}
+        <li>{{name}} {{platform}} {{releaseYear}}</li>
+    {{/games}}
+    </ol>
+    </body>
+    </html>
+
+Now add a controller for your program:
+
+Create a class called GameTrackerSpringController and add the following:
+
+@Controller
+public class GameTrackerController {
+    @RequestMapping(path = "/", method = RequestMethod.GET)
+    public String home() {
+        return "home";
+    }
+}
+
+We need to now create an interface called GameRepository. This will be used to save a game into the database.
+
+public interface GameRepository extends CrudRepository<Game, Integer> {
+}
+
+Back in your controller, bring in the repository with an annotation. Add this to the top of your class:
 
 
+@Controller
+public class GameTrackerController {
+    @Autowired
+    GameRepository games;
+
+    ...
+}
+
+Now we can create a /add-game route and use this repository to save the game:
+
+@Controller
+public class GameTrackerController {
+    ...
+
+    @RequestMapping(path = "/add-game", method = RequestMethod.POST)
+    public String addGame(String gameName, String gamePlatform, String gameGenre, int gameYear) {
+        Game game = new Game(gameName, gamePlatform, gameGenre, gameYear);
+        games.save(game);
+        return "redirect:/";
+    }
+}
+
+The last thing is to use Hibernate's SELECT * FROM [table]. To do this, add a new route for the / path that displays all games. Create a new  mapping that looks like this:
+
+@Controller
+public class GameTrackerController {
+    ...
+
+    @RequestMapping(path = "/", method = RequestMethod.GET)
+    public String home(Model model) {
+        List<Game> gameList = games.findAll();
+        model.addAttribute("games", gameList);
+        return "home";
+    }
+
+    ...
+}
+
+Now run your program!
