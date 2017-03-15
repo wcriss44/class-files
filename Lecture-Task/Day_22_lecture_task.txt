@@ -5,6 +5,7 @@ ORM - Object Relational Mapping
 JPA - Java Persistance Api
 DDL - Data Definition Language [defines tables/columns]
 DML - Data Modification Language [defines query/input]
+time boxing - task are assigned specific times. These are milestones. (development approach)
 
 
 Hibernate is an Object Relational Mapping tool (ORM). It  helps take data from a database and turn it into an object. Hibernate accomplishes this through mapping, as the name would imply.
@@ -197,4 +198,44 @@ public class GameTrackerController {
 }
 
 If you run into issues with the assignment of games.findAll(), it is likely that you need to typecast the return from games.findAll(). To do this, add (List<Game>) in front of games.findAll(), but before gameList =.
+
 Now run your program!
+
+
+-------------------------------------------------------------------
+
+These are the methods that the CrudRepository has available:
+
+<S extends T> S save(S entity);
+      //Example
+        provided that => GameRepository games;
+        games.save(game)
+
+    T findOne(ID primaryKey);
+      //Example
+        provided that => GameRepository games;
+        games.findOne(1);
+
+    Iterable<T> findAll();
+     //Example
+        provided that => GameRepository games;
+        List<Game> gameList = (List<Game>) games.findAll();
+
+    Long count();
+      //Example
+        provided that => GameRepository games;
+
+
+    void delete(T entity);
+     //Example
+        provided that => GameRepository games;
+        games.delete(games.findOne(1));
+
+    boolean exists(ID primaryKey);
+     //Example
+        provided that => GameRepository games;
+        games.exists(1)
+
+T is the <Generic Type> of class. ID is the primary key, which we specified as Integer. You can test some of these methods out on your own, to try and see the results.
+
+Information on how to write custom queries as well as joins can be found on the documentation as well as: http://stackoverflow.com/questions/19977130/joining-two-table-entities-in-spring-data-jpa
