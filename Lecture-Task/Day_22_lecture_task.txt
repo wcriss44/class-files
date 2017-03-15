@@ -1,0 +1,58 @@
+Important terms:
+Data Dictionary - Document that defines the tables and columns
+RDBMS - Relational Database Management System
+ORM - Object Relational Mapping
+
+
+Hibernate is an Object Relational Mapping tool (ORM). It  helps take data from a database and turn it into an object. Hibernate accomplishes this through mapping, as the name would imply.
+
+Object relation mapping makes programming easier as the number of classes and tables in our RDBMS increases.
+
+We have been using H2 for databases so far, but today we will start using postgres. There are a few differences between H2 and postgres, namely the fact that H2 is stored only in the Java application. Postgres is a database that other applications can access, allowing us to develop more robust programs.
+
+Here are some basic commands for postGres:
+
+CREATE TABLE test (id SERIAL, stuff VARCHAR);
+INSERT INTO test VALUES (DEFAULT, 'hello world');
+SELECT * FROM test;
+DROP TABLE test;
+
+Here are the commands to interact with postgres on the command line:
+
+\l lists existing databases
+\du lists existing users
+CREATE DATABASE [name]; creates a new database
+\c [name] connects to the database
+\dt lists the tables in the connected database
+
+It is important to notice that these commands are different than the ones used in H2. For instance, id IDENTITY is id SERIAL, and NULL is now DEFAULT. It is also important that each command is followed by a semi-colon.
+
+Now we will remake our GameTracker program, this time using postGres, Spring, and Hibernate.
+
+Navigate to: https://start.spring.io
+Make sure you select Maven Project
+
+Change group to com.novauc
+Change Artifact to GameTrackerSpring
+
+Add the following dependencies:
+
+    Web
+    DevTools
+    Mustache
+    JPA
+    H2 (useful for testing)
+    PostgreSQL
+
+Click generate
+
+
+Import your project into Intellij. In your terminal, run psql and create a database for this project by typing CREATE DATABASE gametracker;
+
+Next, and this is important, open src/main/resources/application.properties and add the following two lines:
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/gametracker
+spring.jpa.generate-ddl=true
+
+
+
