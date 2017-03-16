@@ -1,0 +1,172 @@
+Today's topic is a continuation of Hibernate. We will focus on using custom query methods as well as joins.
+
+
+                        Game Tracker
+-----------------------------------------------------------------------
+
+First, lets set up a way for our website to query on a subset of data. To do this, start by adding some links to your html:
+
+    <a href="/">All</a>
+    <a href="/?genre=adventure">Adventure</a>
+    <a href="/?genre=rpg">RPG</a>
+    <a href="/?genre=strategy">Strategy</a>
+    <a href="/?genre=shooter">Shooter</a>
+
+    <br><br>
+
+Next we need to create a special method that queries by genre. Inside of your GameRepository class, add the following line:
+
+    List<Game> findByGenre(String genre);
+
+This is a complex line, so lets look at what is happening. First, this is actually a method signature. The left side of the method name (findByGenre) is the return type. In this case, we are returning a List of objects from the Game class. Next, the name is a specific name with some keywords that hibernate looks for. findBy tells hibernate to do a select query, and the part after findBy designates the column. Lastly, the part in the string is what gets passed when the method is called. This part will be the actual genre you are looking for when you call the method.
+
+    This looks like the following:
+        findBySomething(String something) will produce a SQL query that filters the records by a column named something.
+
+Now let's change the / route to allow us to query based on genre. Add and replace the following as needed:
+
+    @RequestMapping(path = "/", method = RequestMethod.GET)
+    public String home(Model model, String genre) {
+        List<Game> gameList;
+        if (genre != null) {
+            gameList = games.findByGenre(genre);
+        } else {
+            gameList = games.findAll();
+        }
+        model.addAttribute("games", gameList);
+        return "home";
+    }
+
+Next we need to add a query for release year. Add the following to your GameRepository class:
+
+    List<Game> findByReleaseYear(int year);
+
+Next we need to add the query parameter by release year. Change your / route to reflect the following:
+
+    @RequestMapping(path = "/", method = RequestMethod.GET)
+    public String home(Model model, String genre, Integer releaseYear) {
+        List<Game> gameList;
+        if (genre != null) {
+            gameList = games.findByGenre(genre);
+        } else if (releaseYear != null) {
+            gameList = games.findByReleaseYear(releaseYear);
+        } else {
+            gameList = games.findAll();
+        }
+        model.addAttribute("games", gameList);
+        return "home";
+    }
+You can test this method by going to: http://localhost:8080/?releaseYear=1995 (change date to match a date you have)
+
+There are countless examples of ways you can do specific queries. Here are some examples to get you thinking:
+        List<Game> findByGenreAndReleaseYear(String genre, int releaseYear);
+    List<Game> findByReleaseYearIsGreaterThanEqual(int minReleaseYear);
+
+    Game findFirstByGenre(String genre);
+    int countByGenre(String genre);
+    List<Game> findByGenreOrderByNameAsc(String genre);
+
+Next, add a search feature. Lets start this feature by adding the required HTML changes:
+
+    <form action="/" method="get">
+      <input type="text" placeholder="Search" name="search"/>
+      <button type="submit">Search</button>
+    </form>
+
+    <br><br>
+In order for this search to work we need to add a special query. Put  this into your GameRepository:
+
+        @Query("SELECT g FROM Game g WHERE g.name LIKE ?1%")
+    List<Game> findByNameStartsWith(String name);
+
+    Notice the annotation @Query is different from other methods you have added.
+
+Our next feature is to add a way for the app to only show games to current users. To do this, create a User class:
+
+    @Entity
+@Table(name = "users")
+public class User {
+    @Id
+    @GeneratedValue
+    int id;
+
+    @Column(nullable = false, unique = true)
+    String name;
+
+    @Column(nullable = false)
+    String password;
+
+    public User() {
+    }
+}
+
+Make sure to generate a constructor for both name and password, as well as setters and getters. Also, notice the new property we have for the Annotation above 'name'. unique = true will make the names unique in the database.
+
+Our next step for this feature is to add the HTML support. Add this to the top of your HTML, within the body:
+
+        {{^user}}
+    <form action="/login" method="post">
+        <input type="text" placeholder="Username" name="userName" required/>
+        <input type="password" placeholder="Password" name="password" required/>
+        <button type="submit">Login</button>
+    </form>
+    {{/user}}
+
+    {{#user}}
+    Welcome, {{name}}!
+    <form action="/logout" method="post">
+        <button type="submit">Logout</button>
+    </form>
+    <br><br>
+
+At the bottom of your HTML, just above the closing body, add a closing mustache for user:  {{/user}}
+
+Now create a new interface called USerRepository with the following code:
+
+    public interface UserRepository extends CrudRepository<User, Integer> {
+    User findFirstByName(String userName);
+}
+
+Our next step here is to add a login and logout route:
+
+        @Autowired
+    UserRepository users;
+
+    @RequestMapping(path = "/login", method = RequestMethod.POST)
+    public String login(HttpSession session, String userName, String password) throws Exception {
+        User user = users.findFirstByName(userName);
+        if (user == null) {
+            user = new User(userName, password);
+            users.save(user);
+        }
+        else if (!password.equals(user.getPassword())) {
+            throw new Exception("Incorrect password");
+        }
+        session.setAttribute("userName", userName);
+        return "redirect:/";
+    }
+
+    @RequestMapping(path = "/logout", method = RequestMethod.POST)
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/";
+    }
+
+Our  next step is to link users to games. This is how we can associate primary and foreign keys in our database. To do this, add the following to the top of your game class:
+
+    @ManyToOne
+    User user;
+
+This will designate that one user has many games, allowing hibernate to create a link between the two. We also have to add the user to our constructor for the Game class. To do this, change your constructor to reflect the following:
+
+        public Game(String name, String platform, String genre, int releaseYear, User user) {
+        this.name = name;
+        this.platform = platform;
+        this.genre = genre;
+        this.releaseYear = releaseYear;
+        this.user = user;
+    }
+
+Next, change
+
+
