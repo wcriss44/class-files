@@ -167,6 +167,55 @@ This will designate that one user has many games, allowing hibernate to create a
         this.user = user;
     }
 
-Next, change
+Next, change the "/" route to pass the userName. Change the method signature to match this as well as add the following lines right below it:
+
+    public String home(HttpSession session, Model model, String genre, Integer releaseYear, String platform) {
+        String userName = (String) session.getAttribute("userName");
+        User user = users.findFirstByName(userName);
+        if (user != null) {
+            model.addAttribute("user", user);
+        }
+
+Now change your "/add-game" route to reflect this:
+
+    @RequestMapping(path = "/add-game", method = RequestMethod.POST)
+    public String addGame(HttpSession session, String gameName, String gamePlatform, String gameGenre, int gameYear) {
+        String userName = (String) session.getAttribute("userName");
+        User user = users.findFirstByName(userName);
+        Game game = new Game(gameName, gamePlatform, gameGenre, gameYear, user);
+        games.save(game);
+        return "redirect:/";
+    }
+
+The last thing we will do is add a way to have a user in the database when the program first starts. This is a great way to test. To do this, add the following:
+
+    @PostConstruct
+    public void init() {
+        if (users.count() == 0) {
+            User user = new User();
+            user.name = "Zach";
+            user.password = "hunter2";
+            users.save(user);
+        }
+    }
+
+
+
+                          finish lecture project
+-------------------------------------------------------------------
+
+The lecture assignment from newline was missing a few things.
+
+ First, we need to have the games show up as being unique to each user. To do this, change your "else" statement in your "/" route to match this:
+                else {
+            gameList = games.findByUser(users.findFirstByName(userName));
+        }
+
+ Second, we are not actually making use of the "search". The search just submits a search route to / with a "search" field, but doesn't actually get used. To make use of the search, we can add the following:
+
+        else {
+            gameList = games.findByUser(users.findFirstByName(userName));
+        }
+
 
 
