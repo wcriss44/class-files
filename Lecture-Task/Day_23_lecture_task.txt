@@ -1,5 +1,22 @@
 Today's topic is a continuation of Hibernate. We will focus on using custom query methods as well as joins.
 
+Since this lession is covering multiple tables, it is a good idea to refresh our knowledge on table relationships. The three important relationships are:
+
+Many to One
+Many to Many
+One to One
+
+With Many to One, or One to Many, one table will contain multiple entries from another table. In our Game tracker, one user can have multiple games, but one game only has one user.
+
+One to One is a relationship where One user would only have One game, ever. This isn't a good relationship for our tables because we want one user to have multiple games. If we had a new table, such as order history, it might be One to One with games.
+
+Lastly, Many to Many is a complicated relationship. This relationship happens when we have multiple Users that have multiple Games. Again, this isn't a good fit for our project, so we are sticking with a Many to One relationship.
+
+Here is a good explanation of using association Annotations in JPA/Hibernate, and when you should use each:
+
+http://stackoverflow.com/questions/16119531/hibernate-jpa-manytoone-vs-onetomany
+
+
 
                         Game Tracker
 -----------------------------------------------------------------------
