@@ -1,6 +1,10 @@
 Today's topic is a continuation of Hibernate. We will focus on using custom query methods as well as joins.
 
-Since this lession is covering multiple tables, it is a good idea to refresh our knowledge on table relationships. The three important relationships are:
+Since this lession is covering multiple tables, it is a good idea to refresh our knowledge on table relationships.
+
+We should start with an explanation of Primary and Foreign keys. PK, or Primary Key, is a unique key that is the primary association key for that table. In your code below, the ID is the primary key. The Foreign Key, or FK, is the primary key of another table but present in a different one. If you have the primary key of users inside of games, it would be a fk while in games but a pk while in users.
+
+As for relationships (or associations) of tables, the three important relationships are:
 
 Many to One
 Many to Many
