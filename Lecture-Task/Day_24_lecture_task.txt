@@ -1,0 +1,94 @@
+Today's topic focuses on building RESTFUL APIs in spring. We will use Angular to accomplish this. Let's start with building an app named AngularSpring.
+
+Key terms:
+API End point: An end point is a URL that you can access to get data from the web-service database.
+
+
+                        Start first lecture project
+----------------------------------------------------------------------------
+
+Use spring initilaizer to start a project called AngularSpring. Add the following libraries: Web, DevTools, JPA, H2.
+
+Download the angular.zip and extract it into a folder called public in the root of your project.
+
+Make sure to add the following to application.properties:
+
+    spring.datasource.url=jdbc:h2:./main
+    spring.jpa.generate-ddl=true
+    spring.jpa.hibernate.ddl-auto=none
+
+ *As a note, Spring has a default controller for / that will display ../public/index.html if no controller is set up. Make sure to move the three items out of your Angular folder (CSS and JS directories, as well as index.html) and place them into your public folder.
+
+ When you run this in Google Chrome and use DevTools, you should see some errors within the JS console. We will need to fix these.
+
+On the server side we need to be able to get a request from this app and store it in our database, and then provide stored data back to the web app. Communication with Angular and other JS frameworks generally require us to work with JSON.
+
+In order to get this to work we need to have our server stop recieving query parameters in the traditional way and start accepting them in the newer JSON encoding way.
+
+First, lets create a user entity in ...java/com/theironyard/entities/User.java.
+
+  Create a User class with this code and then generate setters and getters. There is no need to generate a constructor.
+
+  @Entity
+@Table(name = "users")
+public class User {
+    @Id
+    @GeneratedValue
+    int id;
+
+    @Column(nullable = false)
+    String username;
+
+    @Column(nullable = false)
+    String address;
+
+    @Column(nullable = false)
+    String email;
+}
+
+Next, make a repository in src/main/java/com/theironyard/services/UserRepository.java with:
+
+public interface UserRepository extends CrudRepository<User, Integer> {
+}
+
+
+Now we need a controller. Make one in src/main/java/com/theironyard/controllers/AngularSpringController.java with:
+
+@RestController
+public class AngularSpringController {
+    @Autowired
+    UserRepository users;
+
+    @RequestMapping(path = "/user", method = RequestMethod.GET)
+    public List<User> getUsers() {
+        return (List<User>) users.findAll();
+    }
+}
+
+Now add the following:
+
+    @RequestMapping(path = "/user", method = RequestMethod.POST)
+    public void addUser(@RequestBody User user) {
+        users.save(user);
+    }
+        @RequestMapping(path = "/user", method = RequestMethod.PUT)
+    public void updateUser(@RequestBody User user) {
+        users.save(user);
+    }
+        @RequestMapping(path = "/user/{id}", method = RequestMethod.DELETE)
+    public void deleteUser(@PathVariable("id") int id) {
+        users.delete(id);
+    }
+
+    @RequestMapping(path = "/user/{id}", method = RequestMethod.GET)
+    public User getUser(@PathVariable("id") int id) {
+        return users.findOne(id);
+    }
+
+We now need to start testing. This will be slightly different. First, we will need to create a resources directory within src/test. Make sure to mark it as testResources.
+
+Next, add an application.properties file to the test resources folder with the following lines:
+
+spring.datasource.url=jdbc:h2:mem:test
+spring.jpa.generate-ddl=true
+
