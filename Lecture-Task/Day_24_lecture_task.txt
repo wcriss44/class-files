@@ -135,6 +135,9 @@ Now lets test the DELETE route:
         Assert.assertTrue(users.count() == 0);
     }
 
+
+You should note that for this project, the test has an issue with one of the annotations. This is causing a problem with getting the users to show up correctly. Once we fix this I will update the notes with a working fix.
+
           Finish project
           Start AnonUpload project
 -----------------------------------------------------------------------
