@@ -92,3 +92,141 @@ Next, add an application.properties file to the test resources folder with the f
 spring.datasource.url=jdbc:h2:mem:test
 spring.jpa.generate-ddl=true
 
+Now we need to edit the AngularSpringApplicationTest in your test folder.
+
+    First, create a mockMvc object:
+            @Autowired
+    WebApplicationContext wap;
+
+    MockMvc mockMvc;
+
+    @Before
+    public void before() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(wap).build();
+    }
+Now lets start by testing the POST route. We need to create a USer object and serialize it. We also need to set the content type to application/json. Add this test:
+
+        @Test
+    public void addUser() throws Exception {
+        User user = new User();
+        user.setUsername("Alice");
+        user.setAddress("17 Princess St");
+        user.setEmail("alice@gmail.com");
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(user);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/user")
+                .content(json)
+                .contentType("application/json")
+        );
+
+        Assert.assertTrue(users.count() == 1);
+    }
+Now lets test the DELETE route:
+
+        @Test
+    public void deleteUser() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/user/1")
+        );
+
+        Assert.assertTrue(users.count() == 0);
+    }
+
+          Finish project
+          Start AnonUpload project
+-----------------------------------------------------------------------
+
+First, lets get another Spring project through the initializer. Make sure it contains: Web, DevTools, JPA, and H2. Once you get it, create a public folder and download Jquery into it. Also make sure to create an index.html file in your public that contains:
+
+    <html>
+    <body>
+    <form action="/upload" enctype="multipart/form-data" method="post">
+        <input type="file" name="file"/>
+        <button type="submit">Upload</button>
+    </form>
+    <div id="fileList"></div>
+    <script src="jquery-2.2.1.js"></script>
+    </body>
+    </html>
+
+Now we need to create a class called AnonFile. Create this in a new package within your com.novauc path. Name this directory entities. include the following in this class:
+
+    <@Entity
+    @Table(name = "files")
+    public class AnonFile {
+        @Id
+        @GeneratedValue
+        int id;
+
+        @Column(nullable = false)
+        String filename;
+
+        @Column(nullable = false)
+        String originalFilename;
+
+        public AnonFile() {
+        }
+
+        public AnonFile(String filename, String originalFilename) {
+            this.filename = filename;
+            this.originalFilename = originalFilename;
+        }
+    }
+
+Make sure to generate getters and setters.
+
+Now make a repository in a package called services. The repository should be AnonFileRepository. Have it contain:
+
+    public interface AnonFileRepository extends CrudRepository<AnonFile, Integer> {
+    }
+
+Now we need to create a way to upload. Create a controller in a package called controllers. Name your controller AnonFileController and put the following in it:
+
+    @RestController
+    public class AnonFileController {
+        @Autowired
+        AnonFileRepository files;
+
+        @RequestMapping(path = "/upload", method = RequestMethod.POST)
+        public void upload(MultipartFile file, HttpServletResponse response) throws IOException {
+            File dir = new File("public/files");
+            dir.mkdirs();
+            File f = File.createTempFile("file", file.getOriginalFilename(), dir);
+            FileOutputStream fos = new FileOutputStream(f);
+            fos.write(file.getBytes());
+
+            AnonFile anonFile = new AnonFile(f.getName(), file.getOriginalFilename());
+            files.save(anonFile);
+
+            response.sendRedirect("/");
+        }
+    }
+
+Now we can create a /files endpoint that will allow us to see the files we have uploaded. Add this to your controller:
+
+        @RequestMapping(path = "/files", method = RequestMethod.GET)
+    public List<AnonFile> getFiles() {
+        return (List<AnonFile>) files.findAll();
+    }
+
+Now we just need to create a main.js file within our public folder. Include this in your main.js file:
+
+    function getFiles(filesData) {
+        for (var i in filesData) {
+            var elem = $("<a>");
+            elem.attr("href", "files/" + filesData[i].filename);
+            elem.text(filesData[i].originalFilename);
+            $("#fileList").append(elem);
+            var elem2 = $("<br>");
+            $("#fileList").append(elem2);
+        }
+    }
+
+    $.get("/files", getFiles);
+
+Now test your program out! You should see uploaded files display within your program while it is running. You can also navigate to localhost:8080/files to see a javascript listing of your files.
+
+----------------------------------------------------------------------------
