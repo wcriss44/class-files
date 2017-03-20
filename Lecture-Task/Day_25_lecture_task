@@ -14,3 +14,51 @@ We also have an @Before annotation that assigns the return of MockMvcBuilders.we
 
 Next we have our first test, called addUser. This test creates a new user object and sets the three fields of it. Next we declare a mapper object from the ObjectMapper class. We then use this mapper to write the user object to a JSON string. Next, we give this string to the mock post request and declare what type it is. Lastly, we assert that our users repository object has gone up by one.
 
+Next we have a test for our delete method. This test simply performs the MockMvcRequest for the delete route with the user ID of 1. We then assert that the user count is 0.
+
+It is important to note that we are running these test in memory. If you try to run delete with out first running add, the test will fail. This is because the program dumps the memory after it finishes. In order to test delete you need to run the entire test class.
+
+
+                        Start FileUpload review
+-----------------------------------------------------------
+
+Next we will review the file upload project that we made last week.
+
+Lets start by revewing the HTML for this project. As we have learned, the HTML is the view that we give to the user. Our HTML for this project is very simple. It contains a single form with an input that expects a file and stores the file in a variable named file. Additionally we have a div with an id of fileList and we have a script for our jquery. The id is important here because the javascript will target this id and populate the div with our files.
+
+Next, lets look at our entity within our java code. Go to your entities directory and open the class.
+
+    This should look pretty familiar by now. We have an entity annotation as well as a table annotation. This is required by the ORM side of hibernate in order to develop a table for us.
+
+    Next we have an id and a generatedvalue annotation. These are used to auto generate an id for us. We also have two other columns, one for filename and one for originalFilename.
+
+    Lastly, we have our getters, setters, and constructors.
+
+Our repository is very straight forward. We have an interface called AnonFileRepository that extends CrudRepository, with no abstract methods declared.
+
+The last section we have for this project is the AnonFileController. Open your controllers directory and open your controller class. Lets take a look:
+
+    This class is fairly similar to other Spring controllers we have created in the past. We start with our Controller annotation, but do note that it is declared as a RestController.
+
+    We have a single @Autowired annotation that wires our repository to a variable for us.
+
+    Next we have two mappings for request, one for a post and one for a get.
+
+    The Get is for /files, which allows a user to navigate to the /files route. This returns a list of AnonFile objects by running the files.findAll() method.
+
+    Our post route is a bit mroe complicated, so lets break it down:
+        First we declare the route as /upload, noting that this is the same route that our form had. We also specify that the method is POST.
+
+        After our requestmapping we have our method, which returns nothing and is named upload. This method takes two arguments, a MultipartFile object named file as well as an HttpServletResponse named response. We also specify that it throws Exception.
+
+        Next we have a object created from the File class called dir, which we assign a new File and give it the poath name "public/files". We then run the mkdirs() method off of our file object.(This should make your folders)
+
+        Next we create another file objet called f, and assign it the return from File.createTempFile("file", file.getOriginalFilename(), dir);
+
+        We then declare a FileOutputStream object named fos and assign it as a new FileOutputStream with our file object named f. After this, we run the write method that gets the bytes of the file.
+
+        We then declare an AnonFile object, from the entity we created, named anonFile and pass the return of our getName() method from our file object named f, as well as the file.getOriginalFilename() method, ran on our file object (not this is not the f object)
+
+        Our next step is to save this object in our repository by running files.save()
+
+        Lastly, we redirect by doing response.sendRedirect("/"), returning the user to the index page.
