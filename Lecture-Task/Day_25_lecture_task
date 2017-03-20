@@ -1,0 +1,16 @@
+Today we are talking about automated testing for spring projects using mock MVC.
+
+Start by opening your Angular Spring program from last week.
+
+We set up a test resource directory as well as an application.properties file last week. Make sure that you still have it as well as the code within your AnuglarSpringApplicationTests class.
+
+This lecture note will focus on explaining what each line does.
+
+Before we start, it is important to note that you should replaces
+
+The first thing to notice is that we Autowired WebApplicationContext wap, as well as declared a MockMvc variable named mockMvc.
+
+We also have an @Before annotation that assigns the return of MockMvcBuilders.webAppContextSetup(wap).build() ... This passes the WebApplicationContex object that we autowired into the webAppContextSetup and builds us a setup for it.
+
+Next we have our first test, called addUser. This test creates a new user object and sets the three fields of it. Next we declare a mapper object from the ObjectMapper class. We then use this mapper to write the user object to a JSON string. Next, we give this string to the mock post request and declare what type it is. Lastly, we assert that our users repository object has gone up by one.
+
