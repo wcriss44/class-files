@@ -1,10 +1,13 @@
 Today we are talking about automated testing for spring projects using mock MVC.
 
+useful links:
+    https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-testing.html
+
 Start by opening your Angular Spring program from last week.
 
 We set up a test resource directory as well as an application.properties file last week. Make sure that you still have it as well as the code within your AnuglarSpringApplicationTests class.
 
-This lecture note will focus on explaining what each line does.
+This lecture note will focus on explaining how are programs are working, as well as provide an overview of many lines in our program.
 
 Before we start, it is important to note that you should replaces
 
@@ -62,3 +65,5 @@ The last section we have for this project is the AnonFileController. Open your c
         Our next step is to save this object in our repository by running files.save()
 
         Lastly, we redirect by doing response.sendRedirect("/"), returning the user to the index page.
+
+That is the basics of what each project is accomplishing.  These topics were reviewed today so that we could get a better understanding of how Spring is interacting with both our database as well as the view.
