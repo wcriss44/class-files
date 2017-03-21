@@ -1,0 +1,137 @@
+Today's lecture will cover paging and sorting.
+
+First, create a new Spring project called IronGram. Include the following in your project: Web, DevTools, JPA, H2
+
+For this project we will use H2. We are using H2 because it is an embedded database. This allows us to build a jar and have other people access our program, with out a need to set up a database.
+
+Once you have your project, open it and add the following to application.properties:
+
+spring.datasource.url=jdbc:h2:./main
+spring.jpa.generate-ddl=true
+spring.jpa.hibernate.ddl-auto=none
+
+Lets start by creating an entity to represent our users and another for our photos. Make two classes in the /entities package that have this code, respectively
+
+@Entity
+@Table(name = "users")
+public class User {
+    @Id
+    @GeneratedValue
+    int id;
+
+    @Column(nullable = false, unique = true)
+    String name;
+
+    @Column(nullable = false)
+    String password;
+
+    public User() {
+    }
+
+    public User(String name, String password) {
+        this.name = name;
+        this.password = password;
+    }
+}
+
+@Entity
+@Table(name = "photos")
+public class Photo {
+    @Id
+    @GeneratedValue
+    int id;
+
+    @ManyToOne
+    User sender;
+
+    @ManyToOne
+    User recipient;
+
+    @Column(nullable = false)
+    String filename;
+
+    public Photo() {
+    }
+
+    public Photo(User sender, User recipient, String filename) {
+        this.sender = sender;
+        this.recipient = recipient;
+        this.filename = filename;
+    }
+}
+
+Make sure to add getters and setters to both classes. If you forget to we won't be able to serialize them to JSON. Next, create your repositories for both entities in the services package:
+
+public interface UserRepository extends CrudRepository<User, Integer> {
+    User findFirstByName(String name);
+}
+
+public interface PhotoRepository extends CrudRepository<Photo, Integer> {
+}
+
+Now we can add the controller under the controllers package:
+
+@RestController
+public class IronGramController {
+    @Autowired
+    UserRepository users;
+
+    @Autowired
+    PhotoRepository photos;
+}
+
+
+If you are using Maven, the next step will require you to change the scope of the following dependencies to compile. If you are using gradle, change it to this:
+
+dependencies {
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile('org.springframework.boot:spring-boot-devtools')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('com.h2database:h2')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+Next, add the following to your RestController:
+
+    Server dbui = null;
+
+    @PostConstruct
+    public void init() throws SQLException {
+        dbui = Server.createWebServer().start();
+    }
+
+    @PreDestroy
+    public void destroy() {
+        dbui.stop();
+    }
+
+Now we are ready to start on our routes. First, download the PasswordStorage file from the iron yard. Move this (class) file into a new package named utilities.
+
+Next, add the following routes to your controller:
+
+   @RequestMapping(path = "/login", method = RequestMethod.POST)
+    public User login(String username, String password, HttpSession session, HttpServletResponse response) throws Exception {
+        User user = users.findByName(username);
+        if (user == null) {
+            user = new User(username, PasswordStorage.createHash(password));
+            users.save(user);
+        }
+        else if (!PasswordStorage.verifyPassword(password, user.getPassword())) {
+            throw new Exception("Wrong password");
+        }
+        session.setAttribute("username", username);
+        response.sendRedirect("/");
+        return user;
+    }
+
+    @RequestMapping("/logout")
+    public void logout(HttpSession session, HttpServletResponse response) throws IOException {
+        session.invalidate();
+        response.sendRedirect("/");
+    }
+
+    @RequestMapping(path = "/user", method = RequestMethod.GET)
+    public User getUser(HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        return users.findByName(username);
+    }
