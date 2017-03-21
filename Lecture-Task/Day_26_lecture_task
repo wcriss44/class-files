@@ -135,3 +135,159 @@ Next, add the following routes to your controller:
         String username = (String) session.getAttribute("username");
         return users.findByName(username);
     }
+Next we need to add the HTML for our project. First download Jquery and move it into your public folder. Next, create this html file as index.html and place it in your public folder as well:
+
+<html>
+<body>
+<form action="/login" method="post" id="login" hidden>
+    <input type="text" placeholder="Username" name="username"/>
+    <input type="password" placeholder="Password" name="password"/>
+    <button type="submit">Login</button>
+</form>
+
+<form action="/logout" method="post" id="logout" hidden>
+    <button type="submit">Logout</button>
+</form>
+
+<script src="jquery-2.1.4.min.js"></script>
+</body>
+</html>
+
+Now create a main.js with the following code, inside of your public folder:
+
+function getUser(userData) {
+    if (userData.length == 0) {
+        $("#login").show();
+    }
+    else {
+        $("#logout").show();
+    }
+}
+
+$.get("/user", getUser);
+
+Now go back to your index.html and include the script for both your jquery and main.js, as well as some control for adding photos:
+
+...
+
+<form action="/upload" method="post" enctype="multipart/form-data" id="upload" hidden>
+    <input type="text" placeholder="Receiver name" name="receiver"/>
+    <input type="file" name="photo"/>
+    <button type="submit">Upload</button>
+</form>
+
+<div id="photos"></div>
+
+<script src="jquery-2.1.4.min.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
+
+Now we need to add the /upload route to our controller:
+
+    @RequestMapping("/upload")
+    public Photo upload(
+            HttpSession session,
+            HttpServletResponse response,
+            String receiver,
+            MultipartFile photo
+    ) throws Exception {
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            throw new Exception("Not logged in.");
+        }
+
+        User senderUser = users.findFirstByName(username);
+        User receiverUser = users.findFirstByName(receiver);
+
+        if (receiverUser == null) {
+            throw new Exception("Receiver name doesn't exist.");
+        }
+
+        if (!photo.getContentType().startsWith("image")) {
+            throw new Exception("Only images are allowed.");
+        }
+
+        File photoFile = File.createTempFile("photo", photo.getOriginalFilename(), new File("public"));
+        FileOutputStream fos = new FileOutputStream(photoFile);
+        fos.write(photo.getBytes());
+
+        Photo p = new Photo();
+        p.sender = senderUser;
+        p.receiver = receiverUser;
+        p.filename = photoFile.getName();
+        photos.save(p);
+
+        response.sendRedirect("/");
+
+        return p;
+    }
+Now add a get route so we can get our photos:
+
+@RestController
+public class IronGramController {
+    ...
+
+    @RequestMapping("/photos")
+    public List<Photo> showPhotos(HttpSession session) throws Exception {
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            throw new Exception("Not logged in.");
+        }
+
+        User user = users.findFirstByName(username);
+        return photos.findByReceiver(user);
+    }
+}
+
+Next add the following into your index so we can store photos that we get:
+
+...
+
+<div id="photos"></div>
+
+<script src="jquery-2.1.4.min.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
+
+The last step is to define a JS function to get the photos from the route. Change the existing function in your main.js to match the new getUSer one, as well as add the getPhotos one.
+
+function getPhotos(photosData) {
+    for (var i in photosData) {
+        var photo = photosData[i];
+        var elem = $("<img>");
+        elem.attr("src", photo.filename);
+        $("#photos").append(elem);
+    }
+}
+
+$.get("/photos", getPhotos);
+
+function getUser(userData) {
+    if (userData.length == 0) {
+        $("#login").show();
+        $("#upload").hide();
+    }
+    else {
+        $("#logout").show();
+        $("#upload").show();
+    }
+}
+
+$.get("/user", getUser);
+
+
+
+Now run your program!
+
+                  Start Paging
+--------------------------------------------------------------
+
+Open the Purchases assignment we did for a previous lecture. This project will add paging to it.
+
+The first step is to have PurchaseRepository extend the PagingAndSortingRepository, not the CrudRepository. It should look like this:
+
+public interface PurchaseRepository extends PagingAndSortingRepository<Purchase, Integer> {
+    Page<Purchase> findByCategory(Pageable pageable, String category);
+}
