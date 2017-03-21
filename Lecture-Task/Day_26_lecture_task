@@ -283,6 +283,7 @@ Now run your program!
 
                   Start Paging
 --------------------------------------------------------------
+IMPORTANT: The below section assumes that we have a Purchases assignment. At the time of writing this note, I was unable to find this assignment. I have copied the lecture task here for the sake of completition, but it is likely you will be unable to do this.
 
 Open the Purchases assignment we did for a previous lecture. This project will add paging to it.
 
@@ -291,3 +292,44 @@ The first step is to have PurchaseRepository extend the PagingAndSortingReposito
 public interface PurchaseRepository extends PagingAndSortingRepository<Purchase, Integer> {
     Page<Purchase> findByCategory(Pageable pageable, String category);
 }
+
+Within your controller, change your "/" request mapping to reflect this:
+
+    @RequestMapping(path = "/", method = RequestMethod.GET)
+    public String home(Model model, String category, Integer page) {
+        page = (page == null) ? 0 : page;
+        PageRequest pr = new PageRequest(page, 10);
+        Page<Purchase> p;
+        if (category != null) {
+            p = purchases.findByCategory(pr, category);
+        }
+        else {
+            p = purchases.findAll(pr);
+        }
+        model.addAttribute("purchases", p);
+        model.addAttribute("nextPage", page+1);
+        model.addAttribute("showNext", p.hasNext());
+        return "home";
+    }
+
+Now edit your home.html so it has this right before the closing </body>:
+
+{{#showNext}}
+<a href="/?page={{nextPage}}">Next</a>
+{{/showNext}}
+
+Now go back to your controller and change it so it reflects this signature and return:
+
+    @RequestMapping(path = "/", method = RequestMethod.GET)
+    public String home(Model model, String category, Integer page) {
+        ...
+
+        model.addAttribute("category", category);
+        return "home";
+    }
+
+Lastly, go back to your html and pass the category into the "next" if it isn't null:
+
+{{#showNext}}
+<a href="/?page={{nextPage}}{{#category}}&category={{.}}{{/category}}">Next</a>
+{{/showNext}}
