@@ -30,3 +30,216 @@ Now open your project in IntelliJ and create a psql database called "calendar". 
 
   spring.datasource.url=jdbc:postgresql://localhost:5432/calendar
   spring.jpa.generate-ddl=true
+
+Now lets add an entity (in a new entity package) for User and for Event:
+
+@Entity
+@Table(name = "users")
+public class User {
+    @Id
+    @GeneratedValue
+    int id;
+
+    @Column(nullable = false, unique = true)
+    String name;
+
+    public User() {
+    }
+
+    public User(String name) {
+        this.name = name;
+    }
+}
+
+@Entity
+@Table(name = "events")
+public class Event {
+    @Id
+    @GeneratedValue
+    int id;
+
+    @Column(nullable = false)
+    String description;
+
+    @Column(nullable = false)
+    LocalDateTime dateTime;
+
+    @ManyToOne
+    User user;
+
+    public Event() {
+    }
+
+    public Event(String description, LocalDateTime dateTime, User user) {
+        this.description = description;
+        this.dateTime = dateTime;
+        this.user = user;
+    }
+}
+
+Now set up a home.html page within your templates folder that contains the following:
+
+<html>
+<body>
+{{^user}}
+<form action="/login" method="post">
+    <input type="text" placeholder="Enter your name" name="name"/>
+    <button type="submit">Login</button>
+</form>
+{{/user}}
+
+{{#user}}
+Welcome, {{name}}!<br>
+<form action="/logout" method="post">
+    <button type="submit">Logout</button>
+</form>
+
+<form action="/create-event" method="post">
+    <input type="text" placeholder="Description" name="description" size="50"/>
+    <input type="datetime-local" name="dateTime" value="{{now}}"/>
+    <button type="submit">Add Event</button>
+</form>
+{{/user}}
+
+{{#events}}
+{{description}} {{dateTime}}<br>
+{{/events}}
+</body>
+</html>
+
+Next we need to create two repositories, one for User and one for Event. Create these within a new package called services:
+
+public interface UserRepository extends CrudRepository<User, Integer> {
+    User findFirstByName(String name);
+}
+
+
+public interface EventRepository extends CrudRepository<Event, Integer> {
+    List<Event> findAllByOrderByDateTimeDesc();
+}
+
+Our next step is to add the main controller. Create a new CalendarSpringController class within a new controller package that contains the following:
+
+@Controller
+public class CalendarSpringController {
+    @Autowired
+    EventRepository events;
+
+    @Autowired
+    UserRepository users;
+
+    @RequestMapping(path = "/", method = RequestMethod.GET)
+    public String home(Model model, HttpSession session) {
+        String userName = (String) session.getAttribute("userName");
+        List<Event> eventEntities = events.findAllByOrderByDateTimeDesc();
+        if (userName != null) {
+            User user = users.findFirstByName(userName);
+            model.addAttribute("user", user);
+            model.addAttribute("now", LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+        }
+        model.addAttribute("events", eventEntities);
+        return "home";
+    }
+
+    @RequestMapping(path = "/create-event", method = RequestMethod.POST)
+    public String createEvent(HttpSession session, String description, String dateTime) {
+        String userName = (String) session.getAttribute("userName");
+        if (userName != null) {
+            Event event = new Event(description, LocalDateTime.parse(dateTime), users.findFirstByName(userName));
+            events.save(event);
+        }
+        return "redirect:/";
+    }
+
+    @RequestMapping(path = "/login", method = RequestMethod.POST)
+    public String login(HttpSession session, String name) {
+        User user = users.findFirstByName(name);
+        if (user == null) {
+            user = new User(name);
+            users.save(user);
+        }
+        session.setAttribute("userName", name);
+        return "redirect:/";
+    }
+
+    @RequestMapping(path = "/logout", method = RequestMethod.POST)
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/";
+    }
+}
+
+Now we can run our program and try it out!
+
+Our next step is to write some test for our calendar. We already have a test directory but we need to add a resource folder and mark it as test resources. We also need to create an application.properties file that contains the following:
+
+    spring.datasource.url=jdbc:h2:mem:test
+    spring.jpa.generate-ddl=true
+
+Next we set up our test class with the following:
+
+package com.novauc;
+
+import com.novauc.services.EventRepository;
+import com.novauc.services.UserRepository;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+
+import java.time.LocalDateTime;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class CalendarApplicationTests {
+  @Autowired
+  UserRepository users;
+
+  @Autowired
+  EventRepository events;
+
+  @Autowired
+  WebApplicationContext wap;
+
+  MockMvc mockMvc;
+
+  @Before
+  public void before() {
+    mockMvc = MockMvcBuilders.webAppContextSetup(wap).build();
+  }
+
+  @Test
+  public void testLogin() throws Exception {
+    mockMvc.perform(
+        MockMvcRequestBuilders.post("/login")
+            .param("name", "TestUser")
+    );
+
+    Assert.assertTrue(users.count() == 1);
+  }
+  @Test
+  public void testAddEvent() throws Exception {
+    testLogin();
+
+    mockMvc.perform(
+        MockMvcRequestBuilders.post("/create-event")
+            .param("description", "Test event")
+            .param("dateTime", LocalDateTime.now().toString())
+            .sessionAttr("userName", "TestUser")
+    );
+
+    Assert.assertTrue(events.count() == 1);
+  }
+  @Test
+  public void contextLoads() {
+  }
+}
+
+Run your test and verify that it is working!
