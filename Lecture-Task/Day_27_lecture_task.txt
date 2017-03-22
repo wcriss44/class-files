@@ -1,0 +1,32 @@
+Today's lecture task is going to be on using time and security features in Java.
+
+Three big topics are: Authentication, Authorization, and Encryption.
+
+Authentication is the ability to verify who a requestor is.
+
+Authorization is actually giving access to resources that an authenticated requestor is asking for.
+
+Encryption is the ability to mask data so it is not displayed in plain text.
+
+A very common algorithm for hashing a password (Encrypting) is SHA1. SHA1 is a fast hashing algorithm, but can be vulnerable. It is common practice to rerun a password (think recursive) through SHA1 encryption. PBKDF2 is  a standardized way of doing this, and it runs it a thousand times or more.
+
+Another common security vulnerability is SQL Injection. SQL Injection can be mitigated by using prepared statements in your database, which hibernate does for us. It is still important to be aware of this.
+
+The last common security vulnerability we will talk about is cross-site scripting. Cross-site scripting, or XSS, takes place when an attacker injects JS into your site because it doesn't have protecting to stop it. This script can then run, possibily causing all sorts of issues. According to (wikipedi), over 80% of web app attacks are XSS. There is some good information as well as references available on the wikipedia page: https://en.wikipedia.org/wiki/Cross-site_scripting
+
+----------------------------------------------------------
+
+java.util.Date
+java.time
+java.util.Calendar
+
+These are a few of the ways that we can get "time" or "time related" functionality from the built in library that Java has.  As a note, joda time use to be a fairly popular way of getting time functioanlity within Java. Eventually it was added to the standard library for Java, and is now under java.time
+
+We are going to make an application called CalendarSpring to make use of some of the time keeping methods that we have available.
+
+First, go to spring initializer and create a calendarSpring app with these libraries: Web, DevTools, MustAche, JPA, H2, PostgreSQL
+
+Now open your project in IntelliJ and create a psql database called "calendar". Within your application properties, add the following:
+
+  spring.datasource.url=jdbc:postgresql://localhost:5432/calendar
+  spring.jpa.generate-ddl=true
