@@ -1,0 +1,15 @@
+The 3 week project is going to end up being a team based assignment.
+
+We will likely be assigned our own rooms as teams to work in.
+
+On 28th of April we will present our app.
+
+Required:
+
+Project plan with a minimum of weekly milestones prior to project.
+
+Daily standups explaining your current progress during the three weeks.
+
+Initial presentation of your goal and what the project will entail.
+
+If you have a web app, it is required that your project is actually deployed. You can deploy to Heroku or another cloud solution of your choice.
