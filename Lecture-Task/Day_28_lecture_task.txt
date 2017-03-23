@@ -52,3 +52,126 @@ Because this is a double purpose method, we can also improve this test by verify
 
 Your new and improved test method will now verify that no user with the name of "TestUser" exist, then add it, then test the login by verifying that the name exist and that the count did not go up. Now your test is much more complete.
 
+Now lets take a look at the next test method:
+
+  @Test
+  public void testAddEvent() throws Exception {
+    testLogin();
+
+    mockMvc.perform(
+        MockMvcRequestBuilders.post("/create-event")
+            .param("description", "Test event")
+            .param("dateTime", LocalDateTime.now().toString())
+            .sessionAttr("userName", "TestUser")
+    );
+
+    Assert.assertTrue(events.count() == 1);
+  }
+
+First, what is this method doing? It appears to be doing a post method for the /create-event route, with a description="Test event" and dateTime="LocalDateTime.now().toString()" while making sure that a session attribute of "TestUser" is present, with a key of "userName". We then assert that our events.count has gone up.
+
+We can improve this method by thinking through it the ssame way we did with the previous method. First, lets add initial events.count() and verify that we have increased the amount of events.
+
+  @Test
+  public void testAddEvent() throws Exception {
+    long initialCount = events.count();
+
+    testLogin();
+    mockMvc.perform(
+        MockMvcRequestBuilders.post("/create-event")
+            .param("description", "Test event")
+            .param("dateTime", LocalDateTime.now().toString())
+            .sessionAttr("userName", "TestUser")
+    );
+
+    Assert.assertTrue(events.count() == initialCount + 1);
+  }
+
+We can further improve this method by breaking down what is taking place. We are adding an event that has a DateTime of now and an event description of "Test event". First, we can store the DateTime.now().toString() in a string, add that variable in place of the hard coded one, and test that it actually stored that. We can do the same for the description field. Here is an example of our improved test:
+
+  @Test
+  public void testAddEvent() throws Exception {
+    long initialCount = events.count();
+    String dateTime = LocalDateTime.now().toString();
+    String description = "sup dude";
+    Assert.assertTrue(events.findFirstByDescription(description) == null);
+    testLogin();
+    mockMvc.perform(
+        MockMvcRequestBuilders.post("/create-event")
+            .param("description", description)
+            .param("dateTime", dateTime)
+            .sessionAttr("userName", "TestUser")
+    );
+
+    Assert.assertTrue(events.count() == initialCount + 1);
+    Assert.assertTrue(events.findFirstByDescription(description).getDateTime().toString().equals(dateTime));
+  }
+
+In this test store our dateTime and description as a variable so we can change these dynamically. We also make an assertion that the findByDescription returns null and then we test after that we are able to get a description and verify the date/time
+
+                    Paging and Sorting
+----------------------------------------------------------
+
+Paging can be used when the program constraints require you to pull data from a database in a page fashion. This might be the case when you want to display, for instance, 10 results per page. The PagingAndSorting repository allows you to accomplish this, while sorting your returned data for you.
+
+For this part of the lecture we will build upon one of our homework assignments. The assignment in question is HibernateQueryMethods
+
+To add paging we first need to change our purchase repository from extending CrudRepository to extending PagingAndSortingRepository. Also add new query named findByCategory. Your repository should look like this:
+
+public interface PurchaseRepository extends PagingAndSortingRepository<Purchase, Integer> {
+    Page<Purchase> findByCategory(Pageable pageable, String category);
+}
+
+Next, add an Integer page parameter to your "/" route parameters:
+
+  @RequestMapping(path = "/", method = RequestMethod.GET)
+    public String home(Model model, String category, Integer page) {
+        page = (page == null) ? 0 : page;
+        PageRequest pr = new PageRequest(page, 10);
+        Page<Purchase> p;
+        if (category != null) {
+            p = purchases.findByCategory(pr, category);
+        }
+        else {
+            p = purchases.findAll(pr);
+        }
+        model.addAttribute("purchases", p);
+        model.addAttribute("nextPage", page+1);
+        model.addAttribute("showNext", p.hasNext());
+        return "home";
+    }
+}
+
+Next, edit home.html to display a next link:
+
+...
+
+{{#showNext}}
+<a href="/?page={{nextPage}}">Next</a>
+{{/showNext}}
+</body>
+</html>
+
+Now we can make the paging work for the category pages as well. First, pass the category to the template in your controller:
+
+@Controller
+public class PurchasesController {
+    ...
+
+    @RequestMapping(path = "/", method = RequestMethod.GET)
+    public String home(Model model, String category, Integer page) {
+        ...
+
+        model.addAttribute("category", category);
+        return "home";
+    }
+}
+
+Now edit your html to reflect this:
+
+
+{{#showNext}}
+<a href="/?page={{nextPage}}{{#category}}&category={{.}}{{/category}}">Next</a>
+{{/showNext}}
+</body>
+</html>
