@@ -1,0 +1,54 @@
+Today we are going to talk about automated testing as well as paging and sorting.
+
+The initial part of the lecture covered the automated testing that we did yesterday for lecture. We talked about what each test was doing and covered some parts of what makes a good test.
+
+One consideration is the following:
+
+  @Test
+  public void testLogin() throws Exception {
+    Assert.assertTrue(users.count() == 0);
+    mockMvc.perform(
+        MockMvcRequestBuilders.post("/login")
+            .param("name", "TestUser")
+    );
+
+    Assert.assertTrue(users.count() == 1);
+  }
+
+  How can we improve this test method, bearing in mind that it is a login method that adds you if you do not exist (Not a very practical login method, mind you)?
+
+  An easy example is that we can improve this by verifying that the user count actually increases after adding a user. To do this we can get the initial count prior to preforming our add method. This would look like this:
+
+   @Test
+  public void testLogin() throws Exception {
+  long initialCount = users.count();
+    Assert.assertTrue(users.count() == 0);
+    mockMvc.perform(
+        MockMvcRequestBuilders.post("/login")
+            .param("name", "TestUser")
+    );
+
+    Assert.assertTrue(users.count() == initialCount + 1);
+  }
+
+Because this is a double purpose method, we can also improve this test by verifying that the name doesn't exist prior to attempting to add. We can then try to add again and verify that the users.count doesn't go up. This would look like the following:
+
+  @Test
+  public void testLogin() throws Exception {
+    long initialCount = users.count();
+    Assert.assertTrue(users.findFirstByName("TestUser") == null);
+    mockMvc.perform(
+        MockMvcRequestBuilders.post("/login")
+            .param("name", "TestUser")
+    );
+    Assert.assertTrue(users.findFirstByName("TestUser").getName().equals("TestUser"));
+    Assert.assertTrue(users.count() ==initialCount + 1);
+    mockMvc.perform(
+        MockMvcRequestBuilders.post("/login")
+            .param("name", "TestUser")
+    );
+    Assert.assertTrue(users.count() == initialCount + 1);
+  }
+
+Your new and improved test method will now verify that no user with the name of "TestUser" exist, then add it, then test the login by verifying that the name exist and that the count did not go up. Now your test is much more complete.
+
