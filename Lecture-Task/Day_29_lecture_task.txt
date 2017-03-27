@@ -52,4 +52,3 @@ Now add the following to your Main class, after your main method:
     }
 
 You can now run your program and access the documentation in the /swagger-ui/html route
-    }
