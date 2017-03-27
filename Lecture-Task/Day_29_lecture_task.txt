@@ -1,0 +1,55 @@
+Today's lecture covers documentation for RESTful APIs in Spring. We can use a library called Swagger to help us document what our API does and how to use it. Swagger uses annotations in your code to auto generate documentation that others can use.
+
+We will start by opening Angular Spring project from last week.
+
+After your project is open, navigate to http://kubecloud.io/guide-using-swagger-for-documenting-your-spring-boot-rest-api/
+
+    This is the documentation for using Swagger within your Spring app.
+
+Copy and paste the following, which you can find on the link above, into your pom.xml file:
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.2.2</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.2.2</version>
+            <scope>compile</scope>
+        </dependency>
+
+These will import the new libraries into your project.
+
+The next step is to enable your application to use your new libraries. This is accomplished by adding the @EnableSwagger2 annotation into your application's main class, just above your main method. It should look like the following:
+    package com.novauc;
+
+    import org.springframework.boot.SpringApplication;
+    import org.springframework.boot.autoconfigure.SpringBootApplication;
+    import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+    @SpringBootApplication
+    @EnableSwagger2
+    public class AngularSpringApplication {
+
+      public static void main(String[] args) {
+        SpringApplication.run(AngularSpringApplication.class, args);
+      }
+
+Now add the following to your Main class, after your main method:
+
+    @Bean
+    public Docket swaggerSettings() {
+      return new Docket(DocumentationType.SWAGGER_2)
+          .select()
+          .apis(RequestHandlerSelectors.any())
+          .paths(PathSelectors.any())
+          .build()
+          .pathMapping("/");
+    }
+
+You can now run your program and access the documentation in the /swagger-ui/html route
+    }
