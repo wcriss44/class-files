@@ -1,0 +1,18 @@
+We are going to talk about AWS today. To get started, open the following link (for Veterans) and apply: https://aws.amazon.com/education/awseducate/veterans/
+
+Once you register, access the lab, start it, and then launch the aws console. On the console, you should see sections to learn and build. We will focus on the "build a solution"
+
+Terms for AWS:
+
+EC2 = compute service that provides machines for our programs to run on. This is similiar to the service we used on Heroku.
+
+S3 = file storage. This is a scalable service that allows us to store a large amount of files that can be distributed.
+
+cloud front = cloud storage. This is a cloud storage option that makes your site or content quickly accessabile by storing the content on multiple servers
+
+RDS = Relational Database service. Allows us to get database servers from Amazon.
+
+VPC = Virtual Private Cloud. Amazon VPC enables you to use your own isolated resources within the AWS cloud, and then connect those resources directly to your own datacenter using industry-standard encrypted IPsec VPN connections.
+
+AMI - Amazon Machine Image. Allows you to build a specific template for a machine built using EC2.
+
