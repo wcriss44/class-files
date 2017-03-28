@@ -14,5 +14,19 @@ RDS = Relational Database service. Allows us to get database servers from Amazon
 
 VPC = Virtual Private Cloud. Amazon VPC enables you to use your own isolated resources within the AWS cloud, and then connect those resources directly to your own datacenter using industry-standard encrypted IPsec VPN connections.
 
-AMI - Amazon Machine Image. Allows you to build a specific template for a machine built using EC2.
+AMI = Amazon Machine Image. Allows you to build a specific template for a machine built using EC2.
+
+EB = Elastic Beanstalk. With Elastic Beanstalk, you can deploy, monitor, and scale an application quickly and easily. Let us do the heavy lifting so you can focus on your business.
+
+Today we are going to deploy our own application to AWS, using EB. IF we encounter any issues we can try to work through them. Our assignment will then be to deploy SpringBasicsFR to AWS.
+
+First, select elastic beanstock. From here verify that you can start a new beanstock.
+
+Next, verify that the project you are going to host, in this case SpringBasicsFR, is tracked under github.
+
+Now build your project into a Jar. If it is a Spring Project, use Maven to build your Jar file. To do this, select install from the Maven menu.
+
+Now go back to the Elastic Beanstock part of AWS follow the onscreen prompts, making sure to select a custom project from your computer.
+
+Once the process is finished, make sure to stick to a single web server for instances. Having more than one will cause you to be charged.
 
