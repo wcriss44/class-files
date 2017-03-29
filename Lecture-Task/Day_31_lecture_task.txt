@@ -1,0 +1,148 @@
+Today we are going to cover RESTful APis. More specifically, we are going to cover how to consume a RESTful API.
+
+To review: An API is an interface that programmers use to get data from your program. In a sense, this allows programmers to build programs that "communicate" with programs built by other people.
+
+A RESTful API is a type of API that is meant to be consumed over the Internet. RESTful stands for REpresentational State Transfer. When you "consume" a RESTful API, you are "consuming" the data that was transfered. The data that was transfered is a representation of the current "state" of the data.
+
+Lets start a new project in intellij to practice consuming a RESTful service.
+
+First, open a new project in intellij, making sure to select from Maven. Follow through the wizard and then open your pom.xml
+
+Inside your pom, add the following between <version>0.1.0</version> and the </project> tag:
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.2.RELEASE</version>
+    </parent>
+
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+    </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+Note here that we have included a new dependency that we don't normnally include: jackson. Jackson is used for parsing of JSON
+
+Now create a new package under src -> main -> java that matches whatever group id you have, and then add the following two classes:
+
+// CLASS Quote
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Quote {
+
+    private String type;
+    private Value value;
+
+    public Quote() {
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Value getValue() {
+        return value;
+    }
+
+    public void setValue(Value value) {
+        this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return "Quote{" +
+                "type='" + type + '\'' +
+                ", value=" + value +
+                '}';
+    }
+}
+
+// CLASS: Value
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Value {
+
+    private Long id;
+    private String quote;
+
+    public Value() {
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public String getQuote() {
+        return this.quote;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setQuote(String quote) {
+        this.quote = quote;
+    }
+
+    @Override
+    public String toString() {
+        return "Value{" +
+                "id=" + id +
+                ", quote='" + quote + '\'' +
+                '}';
+    }
+}
+
+Now we need to make the program executable. To do this, create an Application class with the following:
+
+
+    import org.slf4j.Logger;
+    import org.slf4j.LoggerFactory;
+    import org.springframework.web.client.RestTemplate;
+
+    public class Application {
+
+        private static final Logger log = LoggerFactory.getLogger(Application.class);
+
+        public static void main(String args[]) {
+            RestTemplate restTemplate = new RestTemplate();
+            Quote quote = restTemplate.getForObject("http://gturnquist-quoters.cfapps.io/api/random", Quote.class);
+            log.info(quote.toString());
+        }
+    }
+
+To understand what is going on here, we should review encapsulation. Our Quote class encapsulates the Value class. Our Value class contains the "value" of the quote. This looks like this:
+
+    Class A contains object B(data)
+
+In this way, we could of programmed all of the data into a single "Quote" class.
