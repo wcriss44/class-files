@@ -19,3 +19,79 @@ Encryption is the process of securing the data itself.
 
 Role Based Access Control - RBAC
   One set up for this is to have a table of "roles" that has three columns, one for a "role", one for permissions, and one for ID. The role of a user can be identified by a relationship to the table and used with a JOIN on the ID.
+
+We are going to walk through securing an app using Spring and Hibernate.
+
+First, fork the lecture assignment from github and open it in Intellij
+
+After you clone and open it, add the following dependency to your pom.xml file:
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-security</artifactId>
+      </dependency>
+
+Make sure to import the new dependency. Next, create a new class called WebSecurityConfig within src->main->java->springBootApp
+
+Add the following to your class:
+
+    @Configuration
+    @EnableWebSecurity
+    public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http
+                    .authorizeRequests()
+                    .antMatchers("/", "/index", "/index.jsp").permitAll()
+                    .anyRequest().authenticated()
+                    .and()
+                    .formLogin()
+                    .loginPage("/login")
+                    .permitAll()
+                    .and()
+                    .logout()
+                    .permitAll();
+        }
+
+        @Autowired
+        public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+            auth.inMemoryAuthentication().withUser("bob").password("pass").roles("USER");
+            auth.inMemoryAuthentication().withUser("sally").password("pass").roles("USER");
+        }
+    }
+
+Next, open the defaultcontroller class and add the following routes:
+
+    @RequestMapping(value="/login")
+        public String login() {
+            return "login";
+        }
+
+        @RequestMapping(value="/logout")
+        public String logout(HttpServletRequest request, HttpServletResponse response) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null){
+                new SecurityContextLogoutHandler().logout(request, response, auth);
+            }
+            request.setAttribute("logout","logout");
+            return "login";
+    }
+
+
+Now run your program and make sure things are working.
+
+The difference between our program prior to these changes and now are pretty big. Initially the program allowed anyone to make an API request, such as delete or add. From a security standpoint this is not a very secure program. Another issue is that we may not want everyone to see what users are currently registered unless they are a user as well. Prior to these changes, anyone could accomplish any of this.
+
+The changes added a new class called WebSecurityConfig. This class had an override for the configure method that allowed us to specify what security we features we want and how we want to handle request. This can be seen from the methods that were added:
+
+    ...anyRequest().authenticated()
+
+Additionally, this method allowed anyone to see the loginPage and the logout ability:
+    ... and().formLogin().loginPage("/login").permitAll
+        .and().logout().permitAll();
+
+We also autowired an inMemoryAuthentication to give two users that can be authenticated, bob and sally. This occured after the override.
+
+
+In the DefaultController we added two new mappings, one for /login and one for /logout. The login just returned "login", but the logout was a bit more interesting.
+
+First, this method got an authentication object from the SEcuritycontextHolder class by using the getContext() and getAuthentication method. It then checked to see if this object was not null. Provided that it wasn't, a new SecurityContextLogoutHandler object was created and the logout method was ran with the HttpServletRequest object, HttpServletResponse object, and the authentication object. Lastly, this method sets the "logout" attribute, which should display the "logout successful" text after logging out (through our template engine)
