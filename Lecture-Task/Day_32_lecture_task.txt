@@ -1,0 +1,21 @@
+Today we are going to talk about Spring security. This past week we have covered RESTful APIs, how to document them, how to build and deploy them, and how to consume them.
+
+Two security approaches: Programmatic security and Declartive security
+
+Declartive security is a security approach of securing your app through the use of annotations and external measures. A definition from stackoverflow:
+    Declarative features allow the programmer to express intentions at design time. These intentions are enforced internally by the language's engine — in other words, we don't see how it's done. An example would be attributes:
+
+Programmatic security is the process of securing the application by adding logic from the programmer. An example of this is having logic to show specific features of your app if you are an admin, while showing a different subset of features if you are not.
+
+The three big parts of security are:
+
+Authentication, Authorization, Encrytpion
+
+Authentication can be done by having a login that verifies who a person is. Authentication is different from authorization because it only attempts to authenticate who the person is.
+
+Authorization is what determines the actions an authenticated user can do. An example of this can be seen by thinking about an end user and an administrator. Both users are authenticated to be users, but the privelages are different. An administrator has access to parts of your app that an end user is not authorizied to access.
+
+Encryption is the process of securing the data itself.
+
+Role Based Access Control - RBAC
+  One set up for this is to have a table of "roles" that has three columns, one for a "role", one for permissions, and one for ID. The role of a user can be identified by a relationship to the table and used with a JOIN on the ID.
