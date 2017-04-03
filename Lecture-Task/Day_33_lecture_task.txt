@@ -1,3 +1,5 @@
+Link for JHipster documentation: https://jhipster.github.io/documentation-%0Aarchive/v3.9.0
+
 Today we will be talking about Jhipster. Jhipster is an application generator that generates a Spring Boot application with Angular for the front end. Here are the commands and installs you need for this:
 
 Install node.js LTS: https://nodejs.org/en/
@@ -25,25 +27,66 @@ $ yo jhipster
 You will be prompted for several questions. Enter the following:
 
 
-choose either monolithic or microservices app (try monolithic 1st)
-enter PROJECT_NAME
-package name: com.theironyard.novauc
-Authentication: stateful
-Social login: no (skip for now)
-Database type: SQL
-Database engine Production: PostgresSQL
-Database engine Development: H2
-Hibernate cache: yes
-Build tool: Maven
-Social / Search / etc: skip
-CSS preprocessor: no
-internationalization: yes
-native language: English
-add’l languages: French and Japanese
-testing framework: Gatling (or perhaps Cucumber later)
-Clustered HTTP: no
-Websockets: no
+    choose either monolithic or microservices app (try monolithic 1st)
+    enter PROJECT_NAME
+    package name: com.theironyard.novauc
+    Authentication: stateful
+    Social login: no (skip for now)
+    Database type: SQL
+    Database engine Production: PostgresSQL
+    Database engine Development: H2
+    Hibernate cache: yes
+    Build tool: Maven
+    Social / Search / etc: skip
+    CSS preprocessor: no
+    internationalization: yes
+    native language: English
+    add’l languages: French and Japanese
+    testing framework: Gatling (or perhaps Cucumber later)
+    Clustered HTTP: no
+    Websockets: no
 
 Now open your project in IntelliJ and wait until Maven is done building the project.
 
 After testing out your application, our next task is to add a new Class called Customer. To do this, run the following commands:
+
+    Break out with ^C and create / define data:
+    $ yo jhipster:entity customer
+
+    Add fields:
+
+    String firstName
+    String lastName (Required with minimum length 3)
+    LocalDate effectiveStartDate (Required)
+    Add another field: no
+    Relationships: no
+    DTO: no
+    service classes: no
+    pagination: yes with infinite scroll
+    Overwrite files: yes to all..
+
+If you want to see your new class before you start Intellij, run the following in your terminal:
+
+    $ cat .jhipster/Customer.json
+
+Now load your project in IntelliJ again and run it. Login with user/user and test the new entity by adding one, updating it, and then deleting it.
+
+After you are done testing, update some of the default generated JSON data and HTML. For example, navigate to src/main/webapp/i18n/en/home.json within IntelliJ and change the "title" and "subtitle".
+
+Once you are ready, run the following at the command line: ./mvnw -Pprod clean package
+
+    This will optimize your application for production by minifying your CSS and JS files. Once you are done, run this command to test:
+
+    java -jar target/game-sales-0.0.1-SNAPSHOT.war
+
+    You can now navigate to localhost:8080 and test out your finished project.
+
+Next, we can run some automated unit test.
+
+first, run: ./mvnw clean test
+
+next, run gulp test
+
+the last step is to do a performance test by Gatling: ./mvnw gatling:execute
+
+
