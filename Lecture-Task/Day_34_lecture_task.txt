@@ -1,0 +1,32 @@
+Today's topic will be on HTML.
+
+An HTML page contains several tags, which help to define how the content should be displayed. Some common tags are:
+
+<body> </body> (defines the body of a page)
+<p> </p> (found within a body, defines a paragraph)
+<a> </a> (found within a body, defines an anchor)
+<ul> </ul> (found within a body, defines an unordered list)
+<br> (found within a body, defines a break)
+
+There are many more elements, which we will take a look at as the lecture goes on.
+
+The Document Object Model, or DOM, is an import concept within HTML. The DOM is defined by the browser for languages like HTML, XML, and SVG. the DOM defines a "tree" structure for the webpage, which results in a "parent" and "child" element. In addition, it defines events that we can watch for. Javascript is able to be used to target elements and watch for events. This allows us to build dynamic and interactive websites.
+
+Another important part of HTML is the use of attributes and special content.
+
+attributes are used to define how an element should behave. Take for example the following:
+    <a href="http://www.theironyard.com">The Iron Yard's Homepage</a>
+
+In this section of code, <a ...> </a> is an anchor element. This element contains a single attribute, called href. Href is assigned the value of "http://www.theironyard.com". In this way, the href defines how this element should behave. That is to say, the href is used to specify what address the anchor element should go to.
+
+There are many attributes in HTML, and not ever element can have them. Just as well, some elements require specific attributes in order to work correctly, such as the anchor element.
+
+Some other examples of the use of attributes:
+    <img src="red-panda.jpeg" alt="Adorable red panda cub laying in grass.">
+    <a href="cool-site.com"><img src="link-image.png" alt="Images can be links, too!"></a>
+
+Here is a more complex example of structure that embeds an anchor element within a paragraph element:
+    <p>Click <a href="www.theironyard.com">here</a> to visit The Iron Yard's homepage.</p>
+This will cause the link to be wrapped inline with the paragraph text.
+
+
