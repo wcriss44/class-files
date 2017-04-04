@@ -29,4 +29,30 @@ Here is a more complex example of structure that embeds an anchor element within
     <p>Click <a href="www.theironyard.com">here</a> to visit The Iron Yard's homepage.</p>
 This will cause the link to be wrapped inline with the paragraph text.
 
+In addition to manditory ones, such as src and href, there are a few optional ones. The most common optional ones are:
+    class
+    id
+    style
+
+The class is used to define what styling "class" the element is. You can define that class in your stylesheet and apply the class to all elements that you want the style to apply to. This allows us to rapidly style related sections of our code.
+
+The id attribute is used to identify a single element within your html page. This is able to be used for two purposes, one to target an element through a programming language such as JavaScript, or to target an element through CSS. The important distinction here is that id is used for a single element, and as such can only occur once on an html page. A class can occur multiple times.
+
+The style attribute is used to declare inline styles. By thsi point you should realize that there are quite a few ways to declare styles. First, we can declare them within a stylesheet that is external to our HTML. The next way is to include styles within our head section. The last way is to use inline styles with the style="" attribute. This is important because it shows the cascading nature of CSS. The "last" style to be applied is the one that is applied. A stylesheet is applied first, style blocks next, and inline styles last. We can use this to override specific styles on our page.
+
+Now lets talk about text content. At the end of the day, a website is designed to provide information to a user. This is often accomplished through the use of text. Here are some elements that you can use to markup your text:
+
+<p> </p>    This is a paragraph element
+<h1> </h1>  through <h5> </h5>    This is for headings and titles
+
+<span> </span> this is used for inline text and allows you to single out text that is contained within a block of text, such as a <p>. This is often done to allow you to style that specific text with out effecting the rest of the text.
+
+<blockquote> </blockquote> This is for primarily used to designate quoted sections that can be styled through CSS.
+
+<em> </em> , <strong> </strong> em designates italic text while strong designates bold text. These are both used inline, such as within a <p> element.
+
+<br> is a self closing element that is used to designate a break within the page (think of this as new line)
+
+Now lets take a look at list of related text. This will often be used as a backend developer to display data that that should be organized in a related fashion.
+
 
