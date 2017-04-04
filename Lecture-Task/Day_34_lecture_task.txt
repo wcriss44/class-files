@@ -55,4 +55,49 @@ Now lets talk about text content. At the end of the day, a website is designed t
 
 Now lets take a look at list of related text. This will often be used as a backend developer to display data that that should be organized in a related fashion.
 
+<ol> </ol> This will display your data as an ordered list, where each element is has an increasing number. <ol> requires the use of <li> </li> to designate a new list element (list)
+
+<ul> </ul> works in much the same way was <ol>. The only difference is each <li> element is displayed with a bullet point and not a number.
+
+The last important one to talk about is table. A table is set up in the following way:
+
+    <table>
+      <thead>
+        <tr>
+          <th> </th>
+          <th> </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td> </td>
+          <td> </td>
+        </tr>
+      </tbody>
+    </table>
+
+In the previous block of code, we have a containing <table> element that wraps around a <thead> and <tbody> element. Within each of these we have a <tr> element. The <tr> within <thead> contains <th> elements, each representing a column. The <tr> within the <tbody> contains <td> elements, each one representing a data element for a respective column heading.
+
+The next thing to learn about is the <div> element. <div> is an element that is used to contain content within a section of the page. a division element (<div>) will extend across the entire page unless we specify it different. Division elements are commonly used to organize related data.
+
+Semantic HTML:
+
+Here are the common "semantic" elements that are used to organize content, much like a div element. The difference is, these elements use english to communicate their intent, rather than a bunch of <div> elements on your page. Here are the common ones:
+
+<header> </header>
+<nav> </nav>
+<main> </main>
+<article> </article>
+<section> </section>
+<aside> </aside>
+<footer> </footer>
+
+The header and footer represent the top and bottom of your page. Content that is related to this section should be contained within these elements, not div elements. The nav element should be used for navigation, to include navigation menus on the side.
+
+The main, article, section, and aside elements are used to define content that is contained in the "bulk" of your page. The main is for the main section of content, the article is for major sections of content, such as a lession or a news article.
+
+The section element allows us to have unique sections, and is often used with self containing header elements. Such a case might happen when we have multiple articles on a single page.
+
+The aside element is for "sidebar" content, such as advertisements or side based navigation.
+
 
