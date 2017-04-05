@@ -109,3 +109,60 @@ this is used to repeat, or iterate. You can access the current index of your ite
     $last boolean true if the repeated element is last in the iterator.
     $even boolean true if the iterator position $index is even (otherwise false).
     $odd  boolean true if the iterator position $index is odd (otherwise false).
+
+Here is an example of a working basic tutorial:
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>simple angular example</title>
+</head>
+<!-- this is where our angular app starts -->
+<body ng-app="simpleAngularApp">
+
+
+
+<div ng-controller="xboxone">
+  <!-- data binding examples for game in scope -->
+  <input type="text" ng-model="game">
+  {{ game }}
+  {{ game }}
+
+{{ game }}
+
+{{ game }}
+  <!-- loop over users and display in table -->
+  <table>
+    <tr>
+      <td>users name</td>
+    </tr>
+    <tr ng-repeat="item in users">
+      <td>{{item}}</td>
+    </tr>
+  </table>
+</div>
+
+
+
+<!-- bring in angular -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+<script type="text/javascript">
+
+  //fire up the angular app
+  var app = angular.module('simpleAngularApp', []);
+
+  //add a controller to the app
+  app.controller("xboxone", ['$scope', function($scope) {
+
+    //add game into scope
+    $scope.game = "Dark Souls";
+
+    //add users into scope
+    $scope.users = ["eric", "bob", "bill", "jim", "santa clause"]
+
+  }]);
+
+</script>
+</body>
+</html>
+
