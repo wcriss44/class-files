@@ -1,0 +1,83 @@
+Angular documentation: https://docs.angularjs.org/guide/concepts
+
+Today's lecture will cover the use of Angular JS. Angular is used as a full MVC toolkit for building powerful web applications.
+
+Angular has controllers express controllers in Javascript, extend HTML with custom elements and attributes, and link it all together.
+
+Angular is developed and maintained by Google, and is currently in version 2. The goal of angular is to provide building blocks for writting powerful web applications withou requiring the developer to write a bunch of core stuff multiple times.
+
+Angular concepts and terms:
+    Application(ng-app)
+    Controllers(ng-controller)
+    Data binding
+    Services and factories(sharing information throughout the app)
+    Templates
+    Directives(adding new attributes to ng templates)
+    Routes
+    Modules
+
+Example angular code:
+    <!doctype html>
+    <html>
+        <head>...</head>
+        <!--
+           Initialize the application once per HTML page. This bootstraps AngularJS
+           to get it ready for controllers, directives, etc that may come later. This
+           is the 'parent' element of an Angular app and nothing else can happen outside
+           of it (like the <html> of HTML, or `el` in Backbone views).
+        -->
+        <body ng-app="greatnessApp">
+          <div id="data" ng-controller="dataController">
+            <!--
+               ng-model 'binds' the value in this text box to the value of $scope.region.name
+               in your controller. When one changes, the other automatically updates. This
+               is called 'two-way data binding' and it's delicious.
+            -->
+            <input type="text" id="region-name" ng-model="region.name"/>
+            <table id="data-table">
+              <tr>
+                <td>Site name</td>
+                <td>Location</td>
+                <td>Annual revenue</td>
+              </tr>
+              <!--
+                 ng-repeat creates an instance of this element for each of the elements in the
+                 region.sites collection. Within that element we can refer to the current site
+                 as 'site'. Bind each of the cells to a different field of the site so that
+                 they also update when the model changes.
+              -->
+              <tr ng-repeat="site in region.sites">
+                <td>{{ site.name }}</td>
+                <td>{{ site.location }}</td>
+                <td>{{ site.revenue }}</td>
+              </tr>
+            </table>
+            <figure id="data-image">...</figure>
+          </div>
+        </body>
+    </html>
+
+in the code above, we have a few interesting angular concepts taking place. First, it is important to notice that we have ng-app and ng-controller.
+
+    ng-app should be applied to the body element within your HTML. All of your controllers have to be a child of the ng-app.
+
+    ng-controller is most often applied to a div element, and it is used to define the HTML that is defiend within it. The controller can add, remove and update content.
+
+    ng-model is two-way binding, which allows the view to provide updates to the value. In the example above, this is used in the input. {{ }} syntax and ng-bind are used to create one-way bindings.
+
+Example controller:
+
+    // Create an app, and everything else is defined based on this.
+    var app = angular.module('greatnessApp',[]);
+
+    // 'dataController' is the name of this controller. It has to match the name
+    // specified in your HTML! We'll get to the exact syntax, but basically this
+    // is saying "create a controller called dataController and give it access
+    // to the $scope". The $scope is the data that the view has access to.
+    app.controller('dataController', ['$scope', function($scope) {
+      $scope.region = {
+        name: 'Skunkwork, Inc',
+        sites: [],
+      };
+    }]);
+
