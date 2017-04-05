@@ -81,3 +81,31 @@ Example controller:
       };
     }]);
 
+Here is a definition of 2-way data binding:
+    Data-binding in Angular apps is the automatic synchronization of data between the model and view components. The way that Angular implements data-binding lets you treat the model as the single-source-of-truth in your application. The view is a projection of the model at all times. When the model changes, the view reflects the change, and vice versa.
+
+This is important because it allows the user to update the model (think database) and for changes in the model to reflect on the view.
+
+It is also important to note that if the model and view get out of sync, the model is the source of truth for correct data.
+
+Next, lets take a moment to talk about services in Angular. A service is a modul;e that can be injected as a dependency into other components, usually controllers. One type of service in Angular is $http, which is very similiar to Jquery's version of ajax. Here is an example of $http:
+
+    $http({
+      method: 'get',
+      url: '/searchUrl',
+    }).then(function (response) {
+      // update the model, etc
+    });
+
+Other useful Angular information:
+
+ng-repeat=""
+
+this is used to repeat, or iterate. You can access the current index of your iteration by using the $index variable. Here is a list of all variables available, according to the documentation:
+
+    $index  number  iterator offset of the repeated element (0..length-1)
+    $first  boolean true if the repeated element is first in the iterator.
+    $middle boolean true if the repeated element is between the first and last in the iterator.
+    $last boolean true if the repeated element is last in the iterator.
+    $even boolean true if the iterator position $index is even (otherwise false).
+    $odd  boolean true if the iterator position $index is odd (otherwise false).
