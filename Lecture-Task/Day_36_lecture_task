@@ -1,0 +1,27 @@
+Today's lecture is on project management. The highlight topic is Agile project development, specifically Scrum.
+
+Project management is a broad topic, but some of the key areas managed through project management are:
+    constraint gathering
+    project breakdown into task
+    time
+    customer relations
+    key stakeholder relations
+    employees / developers
+
+Project managers are responsbile for the project from inception to completetion, and often for some time after due to maintenance.
+
+Lets take a look at an older project management methodology. Waterfall has been around for quite a few years, starting around 1970.
+
+Waterfall takes the following approach:
+    gather requirements - customer constraints
+    Analysis  - models, schema, and rules
+    Design  - project breakdown, wireframes, software architecture
+    Coding  - development
+    Testing - discovery and debugging
+    Operations - install and maintenance
+
+The biggest problem that waterfall faces is client requirements may be different than the finished product for many reasons: business requirements might change, communication might of been unclear, or new features might be added.
+
+The waterfall methodology takes a linear approach, and as such, the project isn't ready for "testing" until all of the coding is completed. This is the underlying cause of the problems that waterfall faces.
+
+Agile development
