@@ -54,12 +54,21 @@ Key celebrations(meetings) for Agile:
     Sprint Planning Meeting / Iteration planning
     Daily Scrum Meeting
     Sprint Review / Retropsective
+    project review
 
 Scrum teams:
     Scrum Master
     Product Owner
     Development Teams
 
+As a developer, the daily sprint meeting is an important celebration. During this time, each development team member talks (generally under 5 minutes) about three things:
+    What I did last week to accomplish my sprint
+    What I am going to do today to accomplish my sprint
+    What impedments I am facing
+
+This helps to give clarification on your status to all members of the team, as well as helping to identify potential issues that may crop up.
+
+Another important note about Agile development is that test are constantly done during the sprint to validate that your sprint is working correctly. This reduces the amount of bugs found later in the project, and helps to make sure that the project as a whole is working together. Bugs that are found late generally cause additional bugs throughout the program because other parts become dependent on the bug functionality.
 
 
 Wireframes are a great tool for mapping out your project during the inital phase of project planning. The wireframe should convey what the functionality of your project, typically a GUI or webapp. The wireframe does not focus on things like creativity, colors, or design. It focuses more on the placement of features and how things will interact with eachother.
