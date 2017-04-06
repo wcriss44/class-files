@@ -24,4 +24,46 @@ The biggest problem that waterfall faces is client requirements may be different
 
 The waterfall methodology takes a linear approach, and as such, the project isn't ready for "testing" until all of the coding is completed. This is the underlying cause of the problems that waterfall faces.
 
-Agile development
+Agile development takes an iterative approach by cycling through:
+    design
+    development
+    validation
+
+The big project is broken into smaller task that can be tested and validated rapidly. The primary focus is to initially build a minimum viable product. After the MVP is finished, development takes an iterative approach over the MVP until the product is finished. In this approach, the finished product is not defined initially, it is more of an evolution.
+
+The iterations in Agile are typically called a sprint. At the start of each sprint there is an iteration planning meeting.
+
+Key members of the agile team:
+    back end developer
+    front end developer
+    business analyst
+    information architect
+    user experience analyst
+    quality assurance
+    SEO
+
+Key documents for Agile:
+    Project backlog
+    Sprint backlog
+
+The Project backlog is a list, in order of importance, of all task that the project requires.
+
+The Spring backlog is a list of task that you or your team are working on for the duration of the sprint (usually 1-4 weeks).
+
+Key celebrations(meetings) for Agile:
+    Sprint Planning Meeting / Iteration planning
+    Daily Scrum Meeting
+    Sprint Review / Retropsective
+
+Scrum teams:
+    Scrum Master
+    Product Owner
+    Development Teams
+
+
+
+Wireframes are a great tool for mapping out your project during the inital phase of project planning. The wireframe should convey what the functionality of your project, typically a GUI or webapp. The wireframe does not focus on things like creativity, colors, or design. It focuses more on the placement of features and how things will interact with eachother.
+
+Pencil is a popular wireframming tool.
+
+For the creative side of project management, frontend developers will usually use a photoshop file (.PSD) created by a designer. These files allow developers to "cut" assets from the PSD to create images and things needed for the website.
